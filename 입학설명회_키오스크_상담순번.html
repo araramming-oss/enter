@@ -1684,6 +1684,15 @@ function openBoardWindow(){
   doc.close();
 }
 
+function render(){
+  if(currentTab === 'admin') renderAdmin();
+  if(currentTab === 'checkin') renderCheckin();
+  if(currentTab === 'desks') renderDesks();
+  if(currentTab === 'board') renderBoard();
+  if(currentTab === 'records') renderRecords();
+  if(currentTab === 'report') renderReport();
+}
+
 
 /* ================= RECORDS (회차 기록) ================= */
 let recordsData = null;      // students_archive 캐시
