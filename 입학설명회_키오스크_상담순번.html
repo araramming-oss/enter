@@ -789,7 +789,6 @@ async function fetchState(opts){
       render();
     } else if(currentTab === 'board'){
       renderBoard();
-      renderBoardWindow();
     }
   } catch(err){
     setConn(false, '연결 오류 (재시도 중)');
@@ -1627,36 +1626,62 @@ function openBoardWindow(){
       '.chip{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); padding:12px 22px; border-radius:10px; font-size:26px; font-weight:700; color:#E7ECF6; }' +
       '.board-empty{ color:#5F6E8C; font-size:17px; }' +
       '.hint{ position:fixed; bottom:14px; right:18px; font-size:12px; color:#4C5A78; }' +
+      '.conn{ position:fixed; bottom:14px; left:18px; font-size:12px; color:#4C5A78; }' +
     '</style></head><body><div class="wrap">' +
       '<div class="board-title"><span class="t1">Now Calling · 지금 호출 중</span><span class="t2" id="boardClockPopup"></span></div>' +
       '<div class="board-calls" id="boardCallsPopup"></div>' +
       '<div class="board-wait-title">대기 중 · Waiting</div>' +
       '<div class="wait-chips" id="boardWaitChipsPopup"></div>' +
       '<div class="hint">F11 을 눌러 전체화면으로 볼 수 있습니다</div>' +
-    '</div></body></html>');
+      '<div class="conn" id="connPopup">연결 확인 중…</div>' +
+    '</div>' +
+    '<script>' +
+      '(function(){' +
+      'var SB_URL = ' + JSON.stringify(SUPABASE_URL) + ';' +
+      'var SB_KEY = ' + JSON.stringify(SUPABASE_KEY) + ';' +
+      'function sbGet(path){ return fetch(SB_URL + "/rest/v1/" + path, { headers:{ apikey:SB_KEY, Authorization:"Bearer "+SB_KEY } }).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); }); }' +
+      'function esc(s){ return String(s==null?"":s).replace(/[&<>"\']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","\'":"&#39;"}[c]; }); }' +
+      'var lastCallSeen = {}; var primed = false; var flash = {}; var audioCtx = null;' +
+      'function ensureAudioCtx(){ if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } if(audioCtx.state==="suspended"){ audioCtx.resume(); } return audioCtx; }' +
+      'document.addEventListener("click", ensureAudioCtx);' +
+      'function playDing(){ var ctx=ensureAudioCtx(); var now=ctx.currentTime; function tone(freq,start,dur,peak){ var o=ctx.createOscillator(), g=ctx.createGain(); o.type="sine"; o.frequency.value=freq; g.gain.setValueAtTime(0,now+start); g.gain.linearRampToValueAtTime(peak,now+start+0.04); g.gain.exponentialRampToValueAtTime(0.001,now+start+dur); o.connect(g).connect(ctx.destination); o.start(now+start); o.stop(now+start+dur+0.05); } tone(880,0,0.55,0.5); tone(659.25,0.32,0.75,0.45); }' +
+      'function sinoKorean(n){ if(n===0) return "영"; var d=["","일","이","삼","사","오","육","칠","팔","구"]; var u=["","십","백","천"]; var s=String(n), out=""; for(var i=0;i<s.length;i++){ var digit=parseInt(s[i],10); var p=s.length-i-1; if(digit===0) continue; out += (digit===1 && p>0) ? u[p] : (d[digit]+u[p]); } return out; }' +
+      'function pickVoice(){ var vs=window.speechSynthesis.getVoices(); var pref=["yuna","sunhi","heami","female","여성","한국"]; var ko=vs.filter(function(v){return v.lang && v.lang.toLowerCase().indexOf("ko")===0;}); for(var i=0;i<pref.length;i++){ var f=ko.find(function(v){return v.name.toLowerCase().indexOf(pref[i])>=0;}); if(f) return f; } return ko[0]||null; }' +
+      'function speak(text){ if(!("speechSynthesis" in window)) return; var u=new SpeechSynthesisUtterance(text); u.lang="ko-KR"; u.rate=1.0; u.pitch=1.25; u.volume=1.0; var v=pickVoice(); if(v) u.voice=v; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }' +
+      'function announce(ticket, deskIdx){ playDing(); setTimeout(function(){ speak(sinoKorean(ticket)+"번 학생, "+sinoKorean(deskIdx)+"번 자리로 오십시오."); }, 1150); }' +
+      'function render(students, desks){' +
+        'document.getElementById("boardClockPopup").textContent = new Date().toLocaleTimeString("ko-KR");' +
+        'desks.sort(function(a,b){ return (a.position||0)-(b.position||0); });' +
+        'var callsHtml = desks.map(function(d,i){' +
+          'var idx = d.position || (i+1);' +
+          'var serving = d.current_student_id ? students.filter(function(s){ return s.id===d.current_student_id; })[0] : null;' +
+          'var flashing = flash[d.id] && flash[d.id] > Date.now();' +
+          'return "<div class=\\"call-card" + (flashing?" flash":"") + "\\"><div class=\\"desklbl\\">" + idx + "번 자리 · " + esc(d.teacher||"") + "</div>" + (serving ? "<div class=\\"ticket num\\">" + serving.ticket_number + "</div>" : "<div class=\\"empty-txt\\">호출 대기</div>") + "</div>";' +
+        '}).join("") || "<div class=\\"board-empty\\">등록된 데스크가 없습니다.</div>";' +
+        'document.getElementById("boardCallsPopup").innerHTML = callsHtml;' +
+        'var waiting = students.filter(function(s){ return s.status==="waiting"; }).sort(function(a,b){ return (a.ticket_number||0)-(b.ticket_number||0); });' +
+        'document.getElementById("boardWaitChipsPopup").innerHTML = waiting.length ? waiting.map(function(s){ return "<span class=\\"chip num\\">" + s.ticket_number + "</span>"; }).join("") : "<span class=\\"board-empty\\">대기 중인 학생이 없습니다.</span>";' +
+      '}' +
+      'function poll(){' +
+        'Promise.all([ sbGet("students?select=id,ticket_number,status&order=id.asc"), sbGet("desks?select=id,teacher,position,current_student_id,called_ticket,called_at&order=position.asc") ]).then(function(res){' +
+          'document.getElementById("connPopup").textContent = "실시간 연결됨";' +
+          'var students = res[0]||[]; var desks = res[1]||[];' +
+          'desks.forEach(function(d){' +
+            'if(!d.called_at) return;' +
+            'var prev = lastCallSeen[d.id]; var isNew = !prev || (Date.parse(d.called_at) > Date.parse(prev));' +
+            'lastCallSeen[d.id] = d.called_at;' +
+            'if(!primed) return;' +
+            'if(isNew && d.called_ticket){ var age = Date.now()-Date.parse(d.called_at); if(age < 25000){ flash[d.id] = Date.now()+1400; announce(d.called_ticket, d.position||1); } }' +
+          '});' +
+          'primed = true;' +
+          'render(students, desks);' +
+        '}).catch(function(err){ document.getElementById("connPopup").textContent = "연결 오류 (재시도 중)"; console.error(err); });' +
+      '}' +
+      'poll(); setInterval(poll, 2000); setInterval(function(){ document.getElementById("boardClockPopup").textContent = new Date().toLocaleTimeString("ko-KR"); }, 1000);' +
+      '})();' +
+    '<\/script>' +
+    '</body></html>');
   doc.close();
-  renderBoardWindow();
-}
-function renderBoardWindow(){
-  if(!boardWindow || boardWindow.closed) return;
-  const doc = boardWindow.document;
-  const clockEl = doc.getElementById('boardClockPopup');
-  const callsEl = doc.getElementById('boardCallsPopup');
-  const chipsEl = doc.getElementById('boardWaitChipsPopup');
-  if(!clockEl || !callsEl || !chipsEl) return;
-  clockEl.textContent = new Date().toLocaleTimeString('ko-KR');
-  callsEl.innerHTML = buildCallsHtml();
-  chipsEl.innerHTML = buildChipsHtml();
-}
-
-function render(){
-  if(currentTab === 'admin') renderAdmin();
-  if(currentTab === 'checkin') renderCheckin();
-  if(currentTab === 'desks') renderDesks();
-  if(currentTab === 'board') renderBoard();
-  if(currentTab === 'records') renderRecords();
-  if(currentTab === 'report') renderReport();
-  renderBoardWindow();
 }
 
 
@@ -2189,7 +2214,6 @@ document.getElementById('kioskWalkinCard').addEventListener('change', (e) => {
 /* board auto-refresh (clock + flash expiry) */
 setInterval(() => {
   if(currentTab === 'board') renderBoard();
-  renderBoardWindow();
 }, 1000);
 
 /* realtime polling from Supabase */
