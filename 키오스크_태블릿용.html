@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>미림마이스터고 입학설명회 · 접수</title>
+<style>
+  :root{ --amber:#F2A93B; --bg1:#1B2E4A; --bg2:#0F1B2E; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; min-height:100%; font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:radial-gradient(circle at top left,#1B2E4A,#0F1B2E 70%); color:#fff;
+    user-select:none; -webkit-user-select:none;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  body{ display:flex; flex-direction:column; align-items:center; padding:20px 16px 40px; overflow-y:auto; }
+  .wrap{ width:100%; display:flex; flex-direction:column; align-items:center; padding:0; }
+  .brand{ text-align:center; margin-bottom:18px; }
+  .brand .en{ font-size:13px; letter-spacing:3px; color:#9fb3d1; font-weight:700; }
+  .brand .kr{ font-size:22px; font-weight:900; margin-top:4px; }
+  .card{ width:100%; max-width:520px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    border-radius:24px; padding:28px 26px 32px; }
+  .step-title{ font-size:20px; font-weight:900; text-align:center; margin:0 0 4px; }
+  .step-sub{ font-size:14px; color:#9fb3d1; text-align:center; margin:0 0 18px; }
+  label.fld{ display:block; font-size:14px; color:#c7d5ea; margin:14px 2px 6px; font-weight:700; }
+  input#name{ width:100%; font-size:24px; line-height:1.3; font-weight:700; text-align:center; padding:16px; border-radius:14px;
+    border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#fff; outline:none; }
+  input#name:focus{ border-color:var(--amber); }
+  .phone-display{ display:flex; gap:10px; justify-content:center; margin:8px 0 4px; }
+  .digit{ width:56px; height:66px; border-radius:12px; background:#0c1626; border:2px solid rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; }
+  .digit.on{ border-color:var(--amber); }
+  .hint4{ text-align:center; font-size:13px; color:#9fb3d1; margin-top:6px; }
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
+  .key{ touch-action:manipulation; height:72px; border-radius:14px; border:none; font-size:30px; font-weight:800; background:#22344f; color:#fff;
+    cursor:pointer; transition:transform .05s, background .15s; }
+  .key:active{ transform:scale(.95); background:#2c405f; }
+  .key.act:active{ background:#33507a; }
+  .key.del{ background:#3a2b2b; font-size:22px; }
+  .key.clr{ background:#3a3524; font-size:20px; }
+  .submit{ touch-action:manipulation; width:100%; height:76px; margin-top:20px; border:none; border-radius:16px; background:var(--amber);
+    color:#1a1200; font-size:26px; font-weight:900; cursor:pointer; }
+  .submit:disabled{ opacity:.4; }
+  /* 결과 오버레이 */
+  .overlay{ position:fixed; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(6,12,22,.97); z-index:50; padding:24px; text-align:center; }
+  .overlay.show{ display:flex; }
+  .ov-emo{ font-size:56px; margin-bottom:6px; }
+  .ov-name{ font-size:26px; font-weight:700; color:#c7d5ea; }
+  .ov-label{ font-size:20px; color:#9fb3d1; margin-top:22px; }
+  .ov-ticket{ font-size:150px; font-weight:900; line-height:1; color:var(--amber); margin:6px 0 4px;
+    font-family:'IBM Plex Mono',monospace; }
+  .ov-msg{ font-size:22px; font-weight:700; margin-top:14px; max-width:600px; }
+  .ov-sub{ font-size:16px; color:#9fb3d1; margin-top:10px; }
+  .ov.err .ov-ticket{ color:#ff8f8f; }
+  .conn{ position:fixed; bottom:14px; right:16px; font-size:12px; color:#6f83a3; }
+  .dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:#f55; margin-right:5px; vertical-align:middle; }
+  .dot.ok{ background:#4ade80; }
+
+  /* ===== 현장 접수(walk-in) 위저드 ===== */
+  .txt-input{
+    width:100%; font-size:18px; font-weight:600; padding:14px 14px; border-radius:12px;
+    border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#fff; outline:none;
+    font-family:inherit; appearance:none; -webkit-appearance:none;
+  }
+  .txt-input:focus{ border-color:var(--amber); }
+  .txt-input::placeholder{ color:#5b6a86; }
+  .ghost-btn{
+    touch-action:manipulation; width:100%; height:56px; margin-top:12px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
+    background:transparent; color:#c7d5ea; font-size:15px; font-weight:700; cursor:pointer;
+  }
+  .ghost-btn:active{ background:rgba(255,255,255,.06); }
+  .toggle-row{ display:flex; gap:10px; }
+  .toggle-row > select{ flex:1; min-width:0; }
+  .toggle-btn{
+    touch-action:manipulation; flex:1; padding:18px 10px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
+    background:#0c1626; color:#fff; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit;
+  }
+  .toggle-btn.active{ border-color:var(--amber); background:rgba(242,169,59,.15); color:var(--amber); }
+  .chk-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .chk-grid label{
+    display:flex; align-items:center; gap:8px; padding:14px 12px; border-radius:12px;
+    border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#e7ecf6; font-size:14px; cursor:pointer;
+  }
+  .chk-grid input{ width:20px; height:20px; }
+  .confirm-box{ background:rgba(255,255,255,.06); border-radius:14px; padding:16px 18px; margin-bottom:18px; text-align:left; }
+  .confirm-box b{ font-size:19px; color:#fff; }
+  .confirm-sub{ font-size:13px; color:#9fb3d1; margin-top:3px; }
+  #lookupCard .ghost-btn{ margin-top:14px; }
+</style>
+</head>
+<body>
+  <div class="brand">
+    <div class="en">MIRIM MEISTER HIGH SCHOOL</div>
+    <div class="kr">입학설명회 상담 접수</div>
+  </div>
+
+  <div class="wrap">
+    <div class="card" id="lookupCard">
+      <h1 class="step-title">접수하기</h1>
+      <p class="step-sub">이름과 전화번호 뒤 4자리를 입력해 주세요</p>
+
+      <label class="fld">이름</label>
+      <input id="name" type="text" inputmode="text" autocomplete="off" placeholder="홍길동" maxlength="20">
+
+      <label class="fld">전화번호 뒤 4자리</label>
+      <div class="phone-display" id="phoneDisp">
+        <div class="digit" data-i="0"></div>
+        <div class="digit" data-i="1"></div>
+        <div class="digit" data-i="2"></div>
+        <div class="digit" data-i="3"></div>
+      </div>
+      <div class="hint4">예) 010-1234-<b style="color:#F2A93B">5678</b> → 5678 입력</div>
+
+      <div class="keypad" id="keypad">
+        <button class="key act" data-k="1">1</button>
+        <button class="key act" data-k="2">2</button>
+        <button class="key act" data-k="3">3</button>
+        <button class="key act" data-k="4">4</button>
+        <button class="key act" data-k="5">5</button>
+        <button class="key act" data-k="6">6</button>
+        <button class="key act" data-k="7">7</button>
+        <button class="key act" data-k="8">8</button>
+        <button class="key act" data-k="9">9</button>
+        <button class="key clr" data-k="clr">지움</button>
+        <button class="key act" data-k="0">0</button>
+        <button class="key del" data-k="del">←</button>
+      </div>
+
+      <button class="submit" id="btnSubmit" disabled>대기번호 받기</button>
+      <button class="ghost-btn" id="btnGoWalkin">사전 신청을 안 하셨나요? 현장 접수하기</button>
+    </div>
+
+    <div class="card" id="walkinCard" style="display:none;"></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="ov-emo" id="ovEmo"></div>
+    <div class="ov-name" id="ovName"></div>
+    <div class="ov-label" id="ovLabel">나의 대기번호</div>
+    <div class="ov-ticket" id="ovTicket"></div>
+    <div class="ov-msg" id="ovMsg"></div>
+    <div class="ov-sub" id="ovSub">잠시 후 자동으로 돌아갑니다</div>
+  </div>
+
+  <div class="conn"><span class="dot" id="dot"></span><span id="connTxt">연결 확인 중…</span></div>
+
+<script>
+  // ===== Supabase 설정 =====
+  var SUPABASE_URL = "https://zagofytactzqiaifnbks.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_ZRyZG81yfXAPfUk0qw4yiQ_QQopPAFJ";
+  var RPC = SUPABASE_URL + "/rest/v1/rpc/";
+
+  function api(fn, body){
+    return fetch(RPC + fn, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
+      },
+      body: JSON.stringify(body || {})
+    }).then(function(r){
+      return r.json().then(function(j){
+        if(!r.ok){ throw new Error((j && (j.message || j.hint)) || ("HTTP " + r.status)); }
+        return j;
+      });
+    });
+  }
+
+  // ===== 입력 상태 =====
+  var phone = "";
+  var nameEl = document.getElementById("name");
+  var digits = document.querySelectorAll("#phoneDisp .digit");
+  var btn = document.getElementById("btnSubmit");
+  var busy = false;
+
+  function renderPhone(){
+    for(var i=0;i<digits.length;i++){
+      var v = phone[i] || "";
+      digits[i].textContent = v ? "\u25CF" : "";   // 입력값 가림(보안): ● 표시
+      digits[i].classList.toggle("on", i === phone.length);
+    }
+    refreshBtn();
+  }
+  function refreshBtn(){
+    btn.disabled = busy || nameEl.value.trim().length < 2 || phone.length !== 4;
+  }
+  nameEl.addEventListener("input", refreshBtn);
+
+  // 아이패드 등 일부 터치 기기에서 클릭 이벤트가 씹히는 경우를 대비해
+  // touchstart로도 동일하게 반응하도록 만든 헬퍼 (중복 실행은 방지)
+  function addTapDelegate(el, selector, handler){
+    var touchFired = false;
+    el.addEventListener("touchstart", function(e){
+      var target = e.target.closest(selector);
+      if(!target) return;
+      touchFired = true;
+      e.preventDefault();
+      handler(target, e);
+      setTimeout(function(){ touchFired = false; }, 500);
+    }, { passive: false });
+    el.addEventListener("click", function(e){
+      if(touchFired) return;
+      var target = e.target.closest(selector);
+      if(target) handler(target, e);
+    });
+  }
+  function addTap(el, handler){
+    var touchFired = false;
+    el.addEventListener("touchstart", function(e){
+      touchFired = true;
+      e.preventDefault();
+      handler(e);
+      setTimeout(function(){ touchFired = false; }, 500);
+    }, { passive: false });
+    el.addEventListener("click", function(e){
+      if(touchFired) return;
+      handler(e);
+    });
+  }
+
+  addTapDelegate(document.getElementById("keypad"), "button", function(b){
+    var k = b.getAttribute("data-k");
+    if(k === "del"){ phone = phone.slice(0, -1); }
+    else if(k === "clr"){ phone = ""; }
+    else if(phone.length < 4){ phone += k; }
+    renderPhone();
+  });
+
+  // ===== 소리 =====
+  function beep(ok){
+    try{
+      var ac = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.frequency.value = ok ? 880 : 220;
+      g.gain.setValueAtTime(0.0001, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.4);
+      o.start(); o.stop(ac.currentTime + 0.42);
+    }catch(err){}
+  }
+
+  // ===== 결과 오버레이 =====
+  var overlay = document.getElementById("overlay");
+  var ovEmo = document.getElementById("ovEmo");
+  var ovName = document.getElementById("ovName");
+  var ovLabel = document.getElementById("ovLabel");
+  var ovTicket = document.getElementById("ovTicket");
+  var ovMsg = document.getElementById("ovMsg");
+  var ovSub = document.getElementById("ovSub");
+  var resetTimer = null;
+
+  function showResult(kind, data){
+    overlay.classList.remove("err");
+    if(kind === "ok" || kind === "already"){
+      overlay.classList.add("show");
+      ovEmo.textContent = "\uD83C\uDF89";           // 🎉
+      ovName.textContent = (data.name || "") + " 님";
+      ovLabel.textContent = kind === "already" ? "이미 접수되었습니다" : "나의 대기번호";
+      ovTicket.style.color = "#F2A93B";
+      ovTicket.textContent = data.ticket;
+      ovMsg.textContent = "번호가 불릴 때까지 잠시 기다려 주세요";
+      ovSub.textContent = "잠시 후 처음 화면으로 돌아갑니다";
+      beep(true);
+    } else {
+      overlay.classList.add("show","err");
+      ovEmo.textContent = "\uD83D\uDE4F";           // 🙏
+      ovName.textContent = "";
+      ovLabel.textContent = "";
+      ovTicket.style.color = "#ff8f8f";
+      ovTicket.textContent = "!";
+      ovMsg.textContent = "명단에서 정보를 찾지 못했습니다";
+      ovSub.textContent = "안내 데스크에 문의해 주세요";
+      beep(false);
+    }
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(resetForm, kind === "notfound" ? 6000 : 8000);
+  }
+  overlay.addEventListener("click", resetForm);
+
+  function resetForm(){
+    clearTimeout(resetTimer);
+    overlay.classList.remove("show","err");
+    phone = "";
+    nameEl.value = "";
+    renderPhone();
+    nameEl.blur();
+  }
+
+  // ===== 접수 =====
+  addTap(btn, function(){
+    if(btn.disabled) return;
+    busy = true; refreshBtn();
+    var nm = nameEl.value.trim();
+    api("kiosk_checkin", { p_name: nm, p_phone4: phone })
+      .then(function(res){
+        busy = false;
+        if(res && res.ok){
+          showResult(res.already ? "already" : "ok", res);
+        } else {
+          startWalkin(nm);
+        }
+      })
+      .catch(function(err){
+        busy = false; refreshBtn();
+        alert("접수 중 오류가 발생했습니다.\n" + err.message + "\n\n다시 시도하거나 안내 데스크에 문의해 주세요.");
+      });
+  });
+  addTap(document.getElementById("btnGoWalkin"), function(){
+    startWalkin(nameEl.value.trim());
+  });
+
+  // ===== 현장 접수(walk-in) 위저드 =====
+  var lookupCard = document.getElementById("lookupCard");
+  var walkinCard = document.getElementById("walkinCard");
+  var wkScreen = "notfound"; // notfound | step1 | step2
+  var wk = {};
+  var INFO_SOURCES = ["학교 홈페이지", "학교 방문 홍보", "재학생/졸업생 소개", "SNS", "기타"];
+
+  var REGION_DATA = {
+    "서울": ["강남구","강동구","강북구","강서구","관악구","광진구","구로구","금천구","노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구","성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구"],
+    "인천": ["강화군","계양구","남동구","동구","미추홀구","부평구","서구","연수구","옹진군","중구"],
+    "경기": ["가평군","고양시","과천시","광명시","광주시","구리시","군포시","김포시","남양주시","동두천시","부천시","성남시","수원시","시흥시","안산시","안성시","안양시","양주시","양평군","여주시","연천군","오산시","용인시","의왕시","의정부시","이천시","파주시","평택시","포천시","하남시","화성시"],
+    "부산": ["강서구","금정구","남구","동구","동래구","부산진구","북구","사상구","사하구","서구","수영구","연제구","영도구","중구","해운대구","기장군"],
+    "대구": ["남구","달서구","동구","북구","서구","수성구","중구","달성군","군위군"],
+    "광주": ["광산구","남구","동구","북구","서구"],
+    "대전": ["대덕구","동구","서구","유성구","중구"],
+    "울산": ["남구","동구","북구","중구","울주군"],
+    "세종": ["세종시"],
+    "강원": ["춘천시","원주시","강릉시","동해시","태백시","속초시","삼척시","홍천군","횡성군","영월군","평창군","정선군","철원군","화천군","양구군","인제군","고성군","양양군"],
+    "충북": ["청주시","충주시","제천시","보은군","옥천군","영동군","증평군","진천군","괴산군","음성군","단양군"],
+    "충남": ["천안시","공주시","보령시","아산시","서산시","논산시","계룡시","당진시","금산군","부여군","서천군","청양군","홍성군","예산군","태안군"],
+    "전북": ["전주시","군산시","익산시","정읍시","남원시","김제시","완주군","진안군","무주군","장수군","임실군","순창군","고창군","부안군"],
+    "전남": ["목포시","여수시","순천시","나주시","광양시","담양군","곡성군","구례군","고흥군","보성군","화순군","장흥군","강진군","해남군","영암군","무안군","함평군","영광군","장성군","완도군","진도군","신안군"],
+    "경북": ["포항시","경주시","김천시","안동시","구미시","영주시","영천시","상주시","문경시","경산시","의성군","청송군","영양군","영덕군","청도군","고령군","성주군","칠곡군","예천군","봉화군","울진군","울릉군"],
+    "경남": ["창원시","진주시","통영시","사천시","김해시","밀양시","거제시","양산시","의령군","함안군","창녕군","고성군","남해군","하동군","산청군","함양군","거창군","합천군"],
+    "제주": ["제주시","서귀포시"]
+  };
+  var REGION_SIDO_LIST = ["서울","인천","경기","부산","대구","광주","대전","울산","세종","강원","충북","충남","전북","전남","경북","경남","제주"];
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  function showLookupCard(){
+    lookupCard.style.display = "";
+    walkinCard.style.display = "none";
+  }
+  function showWalkinCard(){
+    lookupCard.style.display = "none";
+    walkinCard.style.display = "";
+    renderWalkin();
+  }
+  function startWalkin(prefillName){
+    wk = {
+      name: prefillName || "", phone: "", org: "", regionSido: "", regionGugun: "", grade: "",
+      gender: "", compSelf: false, compMother: false, compFather: false,
+      compSibling: false, compRelative: false, compOther: false,
+      wantsConsult: null, infoSource: ""
+    };
+    wkScreen = "notfound";
+    showWalkinCard();
+  }
+
+  function gugunOptionsHtml(sido, selected){
+    var list = REGION_DATA[sido] || [];
+    return list.map(function(g){ return '<option value="' + g + '"' + (g === selected ? " selected" : "") + '>' + g + '</option>'; }).join("");
+  }
+  function combinedRegion(){
+    return [wk.regionSido, wk.regionGugun].filter(Boolean).join(" ");
+  }
+
+  function renderWalkin(){
+    if(wkScreen === "notfound"){
+      walkinCard.innerHTML =
+        '<h1 class="step-title">사전 신청 내역 없음</h1>' +
+        '<p class="step-sub">입력하신 정보로 등록된 신청 내역을 찾지 못했습니다.<br>현장 접수로 진행하시겠습니까?</p>' +
+        '<button class="submit" id="btnProceed">현장 접수 진행</button>' +
+        '<button class="ghost-btn" id="btnCancelWalkin">다시 입력하기</button>';
+    } else if(wkScreen === "step1"){
+      walkinCard.innerHTML =
+        '<h1 class="step-title">현장 접수</h1>' +
+        '<p class="step-sub">사전 신청 내역 없음 — 아래 정보를 입력해주세요.</p>' +
+        '<label class="fld">이름</label><input class="txt-input" id="wkName" type="text" value="' + esc(wk.name) + '" placeholder="홍길동">' +
+        '<label class="fld">연락처</label><input class="txt-input" id="wkPhone" type="text" value="' + esc(wk.phone) + '" placeholder="010-0000-0000">' +
+        '<label class="fld">출신 중학교</label><input class="txt-input" id="wkOrg" type="text" value="' + esc(wk.org) + '" placeholder="OO중학교">' +
+        '<label class="fld">지역</label>' +
+        '<div class="toggle-row">' +
+          '<select class="txt-input" id="wkRegionSido">' +
+            '<option value="">시/도 선택</option>' +
+            REGION_SIDO_LIST.map(function(s){ return '<option value="' + s + '"' + (wk.regionSido === s ? " selected" : "") + '>' + s + '</option>'; }).join("") +
+          '</select>' +
+          '<select class="txt-input" id="wkRegionGugun">' +
+            '<option value="">구/군 선택</option>' +
+            gugunOptionsHtml(wk.regionSido, wk.regionGugun) +
+          '</select>' +
+        '</div>' +
+        '<label class="fld">학년</label><select class="txt-input" id="wkGrade">' +
+          '<option value="">선택</option>' +
+          ["중1","중2","중3","기타"].map(function(g){ return '<option value="' + g + '"' + (wk.grade === g ? " selected" : "") + '>' + g + '</option>'; }).join("") +
+        '</select>' +
+        '<button class="submit" id="btnNext">다음 →</button>' +
+        '<button class="ghost-btn" id="btnCancelWalkin">취소</button>';
+    } else if(wkScreen === "step2"){
+      var subParts = [wk.org, wk.grade, combinedRegion()].filter(Boolean).map(esc).join(" · ");
+      walkinCard.innerHTML =
+        '<h1 class="step-title">정보 확인 및 선택</h1>' +
+        '<div class="confirm-box"><b>' + esc(wk.name) + '</b>' + (subParts ? '<div class="confirm-sub">' + subParts + '</div>' : "") + '</div>' +
+        '<label class="fld">학생 성별</label>' +
+        '<div class="toggle-row">' +
+          '<button type="button" class="toggle-btn' + (wk.gender === "남" ? " active" : "") + '" data-gender="남">🧑 남자</button>' +
+          '<button type="button" class="toggle-btn' + (wk.gender === "여" ? " active" : "") + '" data-gender="여">👩 여자</button>' +
+        '</div>' +
+        '<label class="fld">함께 오신 분 (복수 선택 가능)</label>' +
+        '<div class="chk-grid">' +
+          '<label><input type="checkbox" data-comp="compSelf"' + (wk.compSelf ? " checked" : "") + '> 🧑\u200d🎓 학생 본인</label>' +
+          '<label><input type="checkbox" data-comp="compMother"' + (wk.compMother ? " checked" : "") + '> 👩 어머니</label>' +
+          '<label><input type="checkbox" data-comp="compFather"' + (wk.compFather ? " checked" : "") + '> 👨 아버지</label>' +
+          '<label><input type="checkbox" data-comp="compSibling"' + (wk.compSibling ? " checked" : "") + '> 👫 형제/자매</label>' +
+          '<label><input type="checkbox" data-comp="compRelative"' + (wk.compRelative ? " checked" : "") + '> 👪 친인척</label>' +
+          '<label><input type="checkbox" data-comp="compOther"' + (wk.compOther ? " checked" : "") + '> ➕ 기타</label>' +
+        '</div>' +
+        '<label class="fld">입학 상담 희망 여부</label>' +
+        '<div class="toggle-row">' +
+          '<button type="button" class="toggle-btn' + (wk.wantsConsult === true ? " active" : "") + '" data-consult="true">✅ 희망합니다</button>' +
+          '<button type="button" class="toggle-btn' + (wk.wantsConsult === false ? " active" : "") + '" data-consult="false">❌ 괜찮습니다</button>' +
+        '</div>' +
+        '<label class="fld">미림마이스터고를 어떻게 알게 되셨나요?</label>' +
+        '<select class="txt-input" id="wkInfoSource"><option value="">선택해주세요</option>' +
+          INFO_SOURCES.map(function(s){ return '<option value="' + s + '"' + (wk.infoSource === s ? " selected" : "") + '>' + s + '</option>'; }).join("") +
+        '</select>' +
+        '<button class="submit" id="btnSubmitWalkin" style="background:#4ade80;">✅ 접수 완료</button>' +
+        '<button class="ghost-btn" id="btnBackWalkin">← 이전</button>';
+    }
+  }
+
+  addTapDelegate(
+    walkinCard,
+    "#btnProceed, #btnCancelWalkin, #btnNext, #btnBackWalkin, #btnSubmitWalkin, [data-gender], [data-consult]",
+    function(target){
+      if(target.id === "btnProceed"){ wkScreen = "step1"; renderWalkin(); return; }
+      if(target.id === "btnCancelWalkin"){ showLookupCard(); resetForm(); return; }
+      if(target.id === "btnBackWalkin"){ wkScreen = "step1"; renderWalkin(); return; }
+      if(target.hasAttribute("data-gender")){ wk.gender = target.getAttribute("data-gender"); renderWalkin(); return; }
+      if(target.hasAttribute("data-consult")){ wk.wantsConsult = (target.getAttribute("data-consult") === "true"); renderWalkin(); return; }
+      if(target.id === "btnNext"){
+        wk.name = (document.getElementById("wkName").value || "").trim();
+        wk.phone = (document.getElementById("wkPhone").value || "").trim();
+        wk.org = (document.getElementById("wkOrg").value || "").trim();
+        wk.regionSido = document.getElementById("wkRegionSido").value;
+        wk.regionGugun = document.getElementById("wkRegionGugun").value;
+        wk.grade = document.getElementById("wkGrade").value;
+        if(!wk.name){ alert("이름을 입력해주세요."); return; }
+        wkScreen = "step2";
+        renderWalkin();
+        return;
+      }
+      if(target.id === "btnSubmitWalkin"){ submitWalkin(); return; }
+    }
+  );
+  walkinCard.addEventListener("change", function(e){
+    var comp = e.target.closest("[data-comp]");
+    if(comp){ wk[comp.getAttribute("data-comp")] = e.target.checked; }
+    var info = e.target.closest("#wkInfoSource");
+    if(info){ wk.infoSource = e.target.value; }
+    var sido = e.target.closest("#wkRegionSido");
+    if(sido){
+      wk.regionSido = sido.value;
+      wk.regionGugun = "";
+      var gugunSel = document.getElementById("wkRegionGugun");
+      if(gugunSel){ gugunSel.innerHTML = '<option value="">구/군 선택</option>' + gugunOptionsHtml(wk.regionSido, ""); }
+    }
+  });
+
+  function patchStudent(id, fields){
+    return fetch(SUPABASE_URL + "/rest/v1/students?id=eq." + id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(fields)
+    });
+  }
+
+  function submitWalkin(){
+    if(!wk.name){ alert("이름을 입력해주세요."); return; }
+    var sbtn = document.getElementById("btnSubmitWalkin");
+    sbtn.disabled = true; sbtn.textContent = "접수 중...";
+    api("walkin_checkin", { p_name: wk.name, p_org: wk.org || "" })
+      .then(function(r){
+        if(!r || r.result !== "ok" || !r.id){ throw new Error("접수 처리에 실패했습니다."); }
+        return patchStudent(r.id, {
+          phone1: wk.phone, region: combinedRegion(), grade: wk.grade, gender: wk.gender,
+          companion_self: wk.compSelf, companion_mother: wk.compMother, companion_father: wk.compFather,
+          companion_sibling: wk.compSibling, companion_relative: wk.compRelative, companion_other: wk.compOther,
+          wants_consult: wk.wantsConsult === true, info_source: wk.infoSource
+        }).then(function(){ return r; });
+      })
+      .then(function(r){
+        showLookupCard();
+        showResult(r.already ? "already" : "ok", r);
+      })
+      .catch(function(err){
+        sbtn.disabled = false; sbtn.textContent = "✅ 접수 완료";
+        alert("접수 중 오류가 발생했습니다.\n" + err.message);
+      });
+  }
+
+  // ===== 연결 확인 =====
+  function checkConn(){
+    fetch(SUPABASE_URL + "/rest/v1/students?select=id&limit=1", {
+      headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+    }).then(function(r){
+      var ok = r.ok;
+      document.getElementById("dot").classList.toggle("ok", ok);
+      document.getElementById("connTxt").textContent = ok ? "실시간 연결됨" : ("연결 오류 " + r.status);
+    }).catch(function(){
+      document.getElementById("dot").classList.remove("ok");
+      document.getElementById("connTxt").textContent = "네트워크 오류";
+    });
+  }
+
+  renderPhone();
+  checkConn();
+  setInterval(checkConn, 15000);
+</script>
+</body>
+</html>

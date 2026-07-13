@@ -1,0 +1,2398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미림마이스터고 입학설명회 · 상담 순번 안내</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --navy:#12213D;
+    --navy-2:#1B2E52;
+    --steel:#2F6690;
+    --amber:#F2A93B;
+    --amber-dim:#C98A2E;
+    --paper:#F5F6F8;
+    --card:#FFFFFF;
+    --ink:#1B1F27;
+    --ink-soft:#5B6472;
+    --line:#DCE1E8;
+    --mint:#2F9E8F;
+    --red:#D5573B;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans KR', -apple-system, 'Malgun Gothic', sans-serif;
+    min-height:100vh;
+  }
+  .num{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  /* ---------- App shell ---------- */
+  .topbar{
+    background:var(--navy);
+    color:#fff;
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 2px 12px rgba(18,33,61,.25);
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    line-height:1.25;
+  }
+  .brand .school{ font-size:12px; letter-spacing:.14em; color:var(--amber); font-weight:700; text-transform:uppercase;}
+  .brand .title{ font-size:19px; font-weight:900; }
+  nav.tabs{ display:flex; gap:6px; background:rgba(255,255,255,.07); padding:4px; border-radius:12px; }
+  nav.tabs button{
+    border:0; background:transparent; color:#C9D2E3;
+    padding:9px 16px; border-radius:9px; font-size:14px; font-weight:700;
+    cursor:pointer; transition:.15s;
+  }
+  nav.tabs button.active{ background:var(--amber); color:var(--navy); }
+  nav.tabs button:not(.active):hover{ background:rgba(255,255,255,.1); color:#fff; }
+
+  main{ max-width:1800px; margin:0 auto; padding:28px 28px 60px; }
+  .hidden{ display:none !important; }
+
+  h2.section-title{ font-size:16px; font-weight:900; margin:0 0 4px; display:flex; align-items:center; gap:8px;}
+  .section-sub{ color:var(--ink-soft); font-size:13px; margin:0 0 16px; }
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin-bottom:20px;
+  }
+  .grid-2{ display:grid; grid-template-columns:1.1fr 1fr; gap:20px; }
+  @media (max-width:820px){ .grid-2{ grid-template-columns:1fr; } }
+
+  textarea, input[type=text]{
+    width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+    font-family:inherit; font-size:14px; color:var(--ink); background:#fbfbfc;
+  }
+  textarea{ min-height:110px; resize:vertical; line-height:1.6;}
+  textarea:focus, input:focus{ outline:2px solid var(--steel); outline-offset:1px; background:#fff;}
+
+  button.btn{
+    border:0; border-radius:10px; padding:10px 16px; font-weight:700; font-size:13.5px;
+    cursor:pointer; transition:.15s; white-space:nowrap;
+  }
+  .btn-primary{ background:var(--navy); color:#fff; }
+  .btn-primary:hover{ background:var(--navy-2); }
+  .btn-amber{ background:var(--amber); color:var(--navy); }
+  .btn-amber:hover{ background:var(--amber-dim); }
+  .btn-ghost{ background:#fff; color:var(--ink); border:1px solid var(--line); }
+  .btn-ghost:hover{ background:#F0F2F5; }
+  .btn-danger{ background:#FBEAE5; color:var(--red); }
+  .btn-danger:hover{ background:#F6D8CE; }
+  button.btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead th{
+    text-align:left; font-size:11.5px; letter-spacing:.04em; color:var(--ink-soft);
+    text-transform:uppercase; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{ padding:9px 10px; border-bottom:1px solid #EEF0F3; vertical-align:middle; white-space:nowrap; }
+  tbody tr:hover{ background:#FAFBFC; }
+  .badge{ display:inline-block; padding:3px 9px; border-radius:20px; font-size:11.5px; font-weight:700; }
+  .b-wait{ background:#EAF1F7; color:var(--steel); }
+  .b-notarrived{ background:#F0F1F3; color:var(--ink-soft); }
+  .b-calling{ background:#FEF2DD; color:var(--amber-dim); }
+  .b-progress{ background:#E6F5F2; color:var(--mint); }
+  .b-done{ background:#EFEFEF; color:#8A8F98; }
+  .b-noshow{ background:#FBEAE5; color:var(--red); }
+
+  .empty{ text-align:center; color:var(--ink-soft); font-size:13.5px; padding:26px 10px; }
+
+  /* ---------- Check-in ---------- */
+  .ticket-issued{
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));
+    color:#fff; border-radius:var(--radius); padding:22px 24px; text-align:center;
+    margin-bottom:18px;
+  }
+  .ticket-issued .lbl{ font-size:12px; letter-spacing:.12em; color:#9FB3D6; text-transform:uppercase; font-weight:700;}
+  .ticket-issued .big{ font-size:56px; font-weight:700; margin:6px 0; color:var(--amber); }
+  .ticket-issued .name{ font-size:15px; color:#DCE3F0; }
+  .student-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 12px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px; background:#fff;
+  }
+  .student-row .info .nm{ font-weight:700; font-size:14px; }
+  .student-row .info .org{ font-size:12px; color:var(--ink-soft); }
+
+  /* ---------- Desk panel ---------- */
+  .desk-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+  .dept-group{ margin-top:22px; }
+  .dept-group-title{ font-size:15.5px; font-weight:900; margin-bottom:12px; display:flex; align-items:baseline; gap:8px; }
+  .dept-group-title .count{ font-size:12.5px; color:var(--ink-soft); font-weight:600; }
+  .assign-select{ font-size:12.5px; padding:5px 8px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); min-width:170px; }
+
+  .queue-list{ display:flex; flex-direction:column; }
+  .queue-row{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 16px;
+    padding:12px 4px; border-bottom:1px solid #EEF0F3;
+  }
+  .queue-row:last-child{ border-bottom:none; }
+  .queue-info{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; min-width:0; }
+  .qi-ticket{ font-size:15px; font-weight:900; color:var(--navy); }
+  .qi-name{ font-size:14px; font-weight:700; }
+  .qi-org{ font-size:12.5px; color:var(--ink-soft); }
+  .qi-consult{ font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:4px; }
+  .queue-controls{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .desk-card{
+    border:1px solid var(--line); border-radius:var(--radius); padding:18px; background:#fff;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .desk-card.serving{ border-color:var(--amber); box-shadow:0 0 0 3px rgba(242,169,59,.18); }
+  .desk-head{ display:flex; justify-content:space-between; align-items:center; }
+  .desk-head .dname{ font-weight:900; font-size:14.5px; }
+  .desk-head .didx{ font-size:11px; color:var(--ink-soft); font-weight:700;}
+  .desk-current{ background:var(--paper); border-radius:10px; padding:14px; text-align:center; }
+  .desk-current .who{ font-size:32px; font-weight:700; color:var(--navy); }
+  .desk-current .sub{ font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .desk-current.empty-slot{ color:var(--ink-soft); font-size:13px; padding:22px 8px; }
+  .queue-count{
+    font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;
+  }
+  .dot{ width:7px; height:7px; border-radius:50%; background:var(--mint); display:inline-block;}
+
+  /* ---------- Display board ---------- */
+  .board{
+    background:radial-gradient(circle at top left, #1B2E52, #0E1A30 65%);
+    border-radius:var(--radius); padding:30px; color:#fff;
+  }
+  .board-title{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:20px; flex-wrap:wrap; gap:8px;}
+  .board-title .t1{ font-size:13px; letter-spacing:.14em; color:var(--amber); font-weight:700; text-transform:uppercase;}
+  .board-title .t2{ font-size:12px; color:#8FA0C0; }
+  .board-calls{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:26px;}
+  .call-card{
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:12px;
+    padding:18px; text-align:center;
+  }
+  .call-card.flash{ animation:flash 1.4s ease; }
+  @keyframes flash{ 0%{ background:rgba(242,169,59,.35);} 100%{ background:rgba(255,255,255,.04);} }
+  .call-card .desklbl{ font-size:12px; color:#9FB3D6; font-weight:700; letter-spacing:.05em;}
+  .call-card .ticket{ font-size:46px; font-weight:700; color:var(--amber); margin:6px 0 2px; }
+  .call-card .empty-txt{ font-size:13px; color:#5F6E8C; padding:16px 0; }
+  .board-wait-title{ font-size:12px; letter-spacing:.1em; color:#9FB3D6; font-weight:700; text-transform:uppercase; margin-bottom:10px;}
+  .wait-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+    padding:7px 14px; border-radius:8px; font-size:16px; font-weight:700; color:#E7ECF6;
+  }
+  .board-empty{ color:#5F6E8C; font-size:13px; }
+
+  .note{
+    font-size:12px; color:var(--ink-soft); background:#EFF3F8; border:1px solid var(--line);
+    border-radius:10px; padding:10px 12px; margin-top:6px; line-height:1.55;
+  }
+  .flex-between{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;}
+  .desk-row{ display:flex; gap:8px; margin-bottom:8px; align-items:center;}
+  .desk-row input{ flex:1; }
+  .small-x{ background:none;border:0;color:var(--ink-soft);cursor:pointer;font-size:16px;padding:4px 8px;}
+  .small-x:hover{ color:var(--red); }
+
+  /* ---------- Dashboard stat boxes ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; }
+  .stat-grid + .stat-grid{ margin-top:10px; }
+  .stat-box{ border-radius:10px; overflow:hidden; border:1px solid var(--line); background:#fff; }
+  .stat-box .hd{ padding:7px 6px; text-align:center; font-size:12px; font-weight:700; color:#fff; }
+  .stat-box .bd{ padding:14px 6px; text-align:center; font-size:23px; font-weight:900; color:var(--ink); background:#F8FAFC; }
+  .mini-select{ font-size:12.5px; padding:4px 6px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); max-width:120px; }
+  .mini-input{ font-size:12.5px; padding:4px 6px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink); max-width:90px; width:100%; }
+  .mini-input:focus{ outline:2px solid var(--steel); outline-offset:0; }
+  .companion-cell{ display:flex; flex-wrap:wrap; gap:4px 8px; max-width:150px; }
+  .cbx-mini{ display:inline-flex; align-items:center; gap:2px; font-size:10.5px; color:var(--ink-soft); white-space:nowrap; cursor:pointer; }
+  .cbx-mini input{ margin:0; }
+
+  /* ---------- Student edit modal ---------- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(18,33,61,.55);
+    z-index:100; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-card{
+    background:#fff; border-radius:16px; width:100%; max-width:520px; max-height:88vh; overflow-y:auto;
+    padding:22px 24px 20px;
+  }
+  .modal-card h2{ margin:0 0 4px; font-size:16.5px; font-weight:900; }
+  .modal-sub{ font-size:12px; color:var(--ink-soft); margin:0 0 16px; }
+  .modal-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+  .modal-field{ margin-bottom:14px; }
+  .modal-field label{ display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:5px; }
+  .modal-field select, .modal-field textarea, .modal-field input[type=text]{
+    width:100%; border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-family:inherit; font-size:13px;
+  }
+  .modal-field textarea{ min-height:56px; resize:vertical; }
+  .modal-check-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .modal-check-row label{ display:inline-flex; align-items:center; gap:5px; font-size:12.5px; font-weight:500; color:var(--ink); cursor:pointer; }
+  .modal-check-row input, .modal-radio-row input{ width:15px; height:15px; }
+  .modal-radio-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .modal-radio-row label{ display:inline-flex; align-items:center; gap:5px; font-size:12.5px; cursor:pointer; }
+  .modal-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:16px; position:sticky; bottom:-20px; background:#fff; padding:10px 0 2px; }
+  .modal-actions .btn{ padding:9px 18px; font-size:13px; }
+  .board-stats{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:26px; }
+  .board-stat{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:9px 14px; text-align:center; min-width:84px; }
+  .board-stat .lbl{ font-size:10.5px; color:#9FB3D6; font-weight:700; letter-spacing:.04em; }
+  .board-stat .val{ font-size:19px; font-weight:900; color:#fff; margin-top:2px; }
+  .hd-steel{ background:var(--steel); } .hd-mint{ background:var(--mint); }
+  .hd-gray{ background:#7C8493; } .hd-purple{ background:#7B5EA7; }
+  .hd-red{ background:var(--red); } .hd-amber{ background:var(--amber-dim); }
+
+  /* ---------- Wide data table ---------- */
+  .table-scroll{ width:100%; overflow-x:auto; }
+  .table-scroll table{ min-width:1900px; }
+  .badge-team{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:11.5px; font-weight:700; }
+  .team-A{ background:#FBEAE5; color:var(--red); }
+  .team-B{ background:#E6F5F2; color:var(--mint); }
+  .team-C{ background:#EAF1F7; color:var(--steel); }
+  .yn-yes{ color:var(--mint); font-weight:700; }
+  .yn-no{ color:var(--ink-soft); }
+
+  /* ---------- Excel upload row ---------- */
+  .upload-row{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    border:1px dashed var(--line); border-radius:10px; padding:12px; margin-top:12px;
+  }
+  .upload-row input[type=file]{ font-size:12.5px; max-width:220px; }
+  .divider-or{ display:flex; align-items:center; gap:10px; color:var(--ink-soft); font-size:12px; margin:14px 0 2px; }
+  .divider-or::before, .divider-or::after{ content:''; flex:1; height:1px; background:var(--line); }
+</style>
+<style>
+  /* ---------- Kiosk (self check-in) ---------- */
+  .kiosk-wrap{ max-width:560px; margin:0 auto; }
+  .kiosk-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:30px 26px; text-align:center;
+  }
+  .kiosk-card .k-title{ font-size:22px; font-weight:900; color:var(--navy); margin:0 0 4px; }
+  .kiosk-card .k-sub{ font-size:14px; color:var(--ink-soft); margin:0 0 22px; }
+  .kiosk-field{ text-align:left; margin-bottom:16px; }
+  .kiosk-field label{ display:block; font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; }
+  .kiosk-field input{ font-size:20px; padding:14px 14px; }
+  .k-phone-display{
+    font-family:'IBM Plex Mono', monospace; font-size:34px; font-weight:700; letter-spacing:.32em;
+    color:var(--navy); background:#F8FAFC; border:1px solid var(--line); border-radius:12px;
+    padding:14px 0; text-align:center; min-height:64px;
+  }
+  .k-phone-display .ph{ color:var(--line); }
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+  .keypad button{
+    font-family:'IBM Plex Mono', monospace; font-size:28px; font-weight:700;
+    padding:20px 0; border-radius:14px; border:1px solid var(--line); background:#fff; color:var(--navy);
+    cursor:pointer; transition:.1s;
+  }
+  .keypad button:hover{ background:#F0F2F5; }
+  .keypad button:active{ transform:scale(.96); }
+  .keypad button.k-back{ background:#FBEAE5; color:var(--red); font-size:20px; }
+  .keypad button.k-submit{ background:var(--amber); color:var(--navy); font-size:20px; }
+  .kiosk-submit-lg{
+    width:100%; margin-top:16px; font-size:22px; font-weight:900; padding:18px 0;
+    background:var(--navy); color:#fff; border:0; border-radius:14px; cursor:pointer;
+  }
+  .kiosk-submit-lg:hover{ background:var(--navy-2); }
+  .kiosk-result{ margin-top:20px; border-radius:var(--radius); padding:26px 20px; }
+  .kiosk-result.ok{ background:linear-gradient(135deg,var(--navy),var(--navy-2)); color:#fff; }
+  .kiosk-result.warn{ background:#FEF6E7; border:1px solid var(--amber); color:var(--navy); }
+  .kiosk-result.err{ background:#FBEAE5; border:1px solid var(--red); color:var(--red); }
+  .kiosk-result .r-lbl{ font-size:14px; letter-spacing:.1em; font-weight:700; text-transform:uppercase; opacity:.85; }
+  .kiosk-result .r-num{ font-family:'IBM Plex Mono',monospace; font-size:78px; font-weight:700; color:var(--amber); margin:8px 0 4px; line-height:1; }
+  .kiosk-result .r-name{ font-size:18px; }
+  .kiosk-result .r-msg{ font-size:19px; font-weight:700; line-height:1.5; }
+  .conn-pill{ font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; background:rgba(255,255,255,.12); color:#C9D2E3; }
+  .conn-pill.ok{ background:rgba(47,158,143,.25); color:#8ff0e0; }
+  .conn-pill.bad{ background:rgba(213,87,59,.28); color:#ffb3a1; }
+
+  /* ---------- Kiosk walk-in wizard ---------- */
+  .kiosk-ghost-btn-lg{
+    width:100%; margin-top:10px; font-size:14.5px; font-weight:700; padding:14px 0;
+    background:#fff; color:var(--ink-soft); border:1.5px solid var(--line); border-radius:14px; cursor:pointer;
+  }
+  .kiosk-ghost-btn-lg:hover{ background:#F4F6F8; }
+  .wk-confirm-box{ background:#EAF1F7; border-radius:12px; padding:16px 18px; margin-bottom:20px; text-align:left; }
+  .wk-confirm-box b{ font-size:18px; color:var(--navy); }
+  .wk-confirm-sub{ font-size:13px; color:var(--ink-soft); margin-top:3px; }
+  .wk-toggle-row{ display:flex; gap:10px; }
+  .wk-toggle{
+    flex:1; padding:16px 10px; border:1.5px solid var(--line); border-radius:12px; background:#fff;
+    font-size:15px; font-weight:700; cursor:pointer; color:var(--ink); font-family:inherit;
+  }
+  .wk-toggle.active{ border-color:var(--steel); background:#EAF1F7; color:var(--steel); }
+  .wk-toggle[data-consult="true"].active{ border-color:var(--mint); background:#E6F5F2; color:var(--mint); }
+  .wk-toggle[data-consult="false"].active{ border-color:var(--red); background:#FBEAE5; color:var(--red); }
+  .wk-check-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .wk-check-grid label{
+    display:flex; align-items:center; gap:8px; padding:14px 12px; border:1.5px solid var(--line);
+    border-radius:10px; font-size:14px; cursor:pointer; text-align:left;
+  }
+  .wk-check-grid input{ width:18px; height:18px; }
+
+  /* ---------- Mobile responsive ---------- */
+  @media (max-width: 720px){
+    .topbar{ padding:12px 14px; }
+    .brand .title{ font-size:16px; }
+    .brand .school{ font-size:10.5px; }
+    nav.tabs{ overflow-x:auto; max-width:100%; -webkit-overflow-scrolling:touch; }
+    nav.tabs button{ padding:8px 12px; font-size:12px; white-space:nowrap; }
+    main{ padding:16px 12px 40px; }
+    .panel{ padding:16px; }
+    .grid-2{ grid-template-columns:1fr; }
+    .stat-grid{ grid-template-columns:repeat(2,1fr); }
+    .desk-grid{ grid-template-columns:1fr; }
+    .board-calls{ grid-template-columns:1fr; }
+    .board-stats{ justify-content:center; }
+    table{ font-size:12px; }
+    .kiosk-wrap{ max-width:100%; }
+    .kiosk-card{ padding:22px 16px; }
+    .kiosk-result .r-num{ font-size:60px; }
+    .wk-check-grid{ grid-template-columns:1fr; }
+    .wk-toggle-row{ flex-direction:column; }
+    .queue-row{ flex-direction:column; align-items:flex-start; }
+    .queue-controls{ width:100%; }
+    .assign-select{ flex:1; min-width:0; }
+
+    .modal-overlay{ padding:0; }
+    .modal-card{
+      max-width:100%; width:100%; height:100%; max-height:100%; border-radius:0;
+      padding:20px 16px 90px; display:flex; flex-direction:column;
+    }
+    .modal-grid2{ grid-template-columns:1fr; }
+    .modal-actions{
+      position:fixed; left:0; right:0; bottom:0; margin-top:0;
+      background:#fff; padding:12px 16px; box-shadow:0 -2px 10px rgba(0,0,0,.08);
+    }
+    .modal-actions .btn{ flex:1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="school">MIRIM MEISTER HIGH SCHOOL</span>
+    <span class="title">입학설명회 상담 순번 안내</span>
+  </div>
+  <nav class="tabs">
+    <button data-tab="admin" class="active">① 명단 관리</button>
+    <button data-tab="checkin">② 도착 접수</button>
+    <button data-tab="desks">③ 상담 데스크</button>
+    <button data-tab="board">④ 전광판</button>
+    <button data-tab="kiosk">⑤ 키오스크(셀프 접수)</button>
+    <button data-tab="records">⑥ 회차 기록</button>
+    <button data-tab="report">⑦ 결과보고서</button>
+  </nav>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span class="conn-pill" id="connPill">연결 확인 중…</span>
+    <button class="btn btn-amber" id="btnOpenBoardWindow">🖥️ 전광판 새 창으로 열기</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============ TAB 1: ADMIN ============ -->
+  <section id="tab-admin">
+
+    <div class="panel">
+      <h2 class="section-title">📊 참석 현황</h2>
+      <p class="section-sub">실시간으로 계산됩니다. (모든 기기가 같은 데이터를 공유합니다)</p>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="hd hd-steel">신청인원</div><div class="bd num" id="statTotal">0</div></div>
+        <div class="stat-box"><div class="hd hd-mint">참석인원</div><div class="bd num" id="statArrived">0</div></div>
+        <div class="stat-box"><div class="hd hd-gray">미참석</div><div class="bd num" id="statNotArrived">0</div></div>
+        <div class="stat-box"><div class="hd hd-purple">참석률</div><div class="bd num" id="statRate">0%</div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="hd hd-amber">상담희망</div><div class="bd num" id="statWantConsult">0</div></div>
+        <div class="stat-box"><div class="hd hd-purple">상담완료</div><div class="bd num" id="statConsultDone">0</div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="hd hd-steel">남</div><div class="bd num" id="statMale">0</div></div>
+        <div class="stat-box"><div class="hd hd-red">여</div><div class="bd num" id="statFemale">0</div></div>
+        <div class="stat-box"><div class="hd hd-purple">평균상담(분)</div><div class="bd num" id="statAvgMinutes">-</div></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h2 class="section-title">🧾 학생 명단 일괄 등록</h2>
+        <p class="section-sub">한 줄에 한 명씩 입력하세요. <span class="num">이름</span> 만 입력하거나, <span class="num">이름,출신학교</span> 또는 <span class="num">이름,출신학교,전화번호</span> 형식으로 입력할 수 있습니다.</p>
+        <textarea id="bulkInput" placeholder="예시)&#10;김민준,서울OO중학교,[PHONE_NUMBER]&#10;이서연,인천OO중학교,[PHONE_NUMBER]&#10;박도윤"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnBulkAdd">명단에 추가</button>
+          <button class="btn btn-ghost" id="btnSample">예시 채우기</button>
+        </div>
+        <div class="note">※ <b>전화번호</b>가 입력되어 있어야 학생이 <b>⑤ 키오스크</b>에서 <b>이름 + 전화번호 뒤 4자리</b>로 직접 접수할 수 있습니다. 전화번호가 없으면 안내 데스크에서 대신 접수해야 합니다.</div>
+
+        <div class="divider-or">또는 엑셀 파일로 한 번에 등록</div>
+        <div class="upload-row">
+          <input type="file" id="excelFile" accept=".xlsx,.xls,.csv">
+          <button class="btn btn-ghost" id="btnDownloadTemplate">📥 엑셀 양식 다운로드</button>
+        </div>
+        <div class="note">※ 엑셀 양식의 열 제목(성명, 연락처1, 연락처2, 출신학교, 지역, 학년, 성별, 담당교사(홍보), 정보취득경로, 상담희망(Y/N), 관심학과, 동반자_본인/어머니/아버지/형제자매/친인척/기타(Y/N), 비고)을 그대로 유지한 채 내용만 채워서 업로드해주세요. 키오스크 매칭을 위해 <b>연락처1(또는 연락처2)</b>을 꼭 채워주세요.</div>
+        <div class="note">※ 데이터는 Supabase에 저장되어 여러 기기(안내 PC·태블릿·전광판)가 실시간으로 공유합니다. 새로고침해도 유지됩니다.</div>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-title">🪑 상담 데스크 설정</h2>
+        <p class="section-sub">담당 선생님 성함을 입력하면 자리 번호가 자동으로 매겨집니다.</p>
+        <div id="deskEditList"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="btnAddDesk">+ 데스크 추가</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="flex-between">
+        <h2 class="section-title">전체 학생 명단 <span id="totalCount" style="color:var(--ink-soft); font-weight:500;"></span></h2>
+        <button class="btn btn-danger" id="btnResetAll">전체 초기화</button>
+      </div>
+      <div class="table-scroll" id="adminTableWrap"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: CHECK-IN ============ -->
+  <section id="tab-checkin" class="hidden">
+    <div id="ticketIssuedWrap"></div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h2 class="section-title">🔍 도착한 학생 찾기</h2>
+        <p class="section-sub">이름을 검색해 도착 접수 버튼을 누르면 대기번호가 즉시 발급됩니다.</p>
+        <input type="text" id="checkinSearch" placeholder="학생 이름 검색...">
+        <div id="checkinList" style="margin-top:12px;"></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-title">➕ 현장 등록 (명단에 없는 경우)</h2>
+        <p class="section-sub">사전 명단에 없는 방문자도 바로 접수할 수 있습니다.</p>
+        <input type="text" id="walkinName" placeholder="이름">
+        <div style="height:8px;"></div>
+        <input type="text" id="walkinOrg" placeholder="출신학교 (선택)">
+        <div class="btn-row">
+          <button class="btn btn-amber" id="btnWalkin">현장 접수 &amp; 번호 발급</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 3: DESKS ============ -->
+  <section id="tab-desks" class="hidden">
+    <div class="panel">
+      <div class="flex-between">
+        <div>
+          <h2 class="section-title">🔔 상담 희망 대기열 · 선생님 배정</h2>
+          <p class="section-sub">관심학과를 지정하고, 비어있는 선생님을 드롭다운에서 골라 [배정] 버튼을 누르면 해당 데스크로 호출됩니다.</p>
+        </div>
+        <div class="queue-count"><span class="dot"></span><span id="waitingCountTxt">대기 0명</span></div>
+      </div>
+      <div class="queue-list" id="consultQueueWrap"></div>
+    </div>
+    <div id="deskGroups"></div>
+  </section>
+
+  <!-- ============ TAB 4: BOARD ============ -->
+  <section id="tab-board" class="hidden">
+    <div class="panel">
+      <div class="flex-between">
+        <div>
+          <h2 class="section-title">🖥️ 전광판 표시 방법</h2>
+          <p class="section-sub">아래 버튼을 누르면 전광판만 새 창으로 열립니다. 그 창을 프로젝터·외부 모니터로 끌어놓고 전체화면(F11)으로 띄우면, 이 페이지에서 접수·호출 작업을 하는 동안에도 실시간으로 함께 갱신됩니다.</p>
+        </div>
+        <button class="btn btn-amber" id="btnOpenBoardWindow2">🖥️ 전광판 새 창으로 열기</button>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-stats" id="boardStats"></div>
+      <div class="board-title">
+        <span class="t1">Now Calling · 지금 호출 중</span>
+        <span class="t2" id="boardClock"></span>
+      </div>
+      <div class="board-calls" id="boardCalls"></div>
+      <div class="board-wait-title">대기 중 · Waiting</div>
+      <div class="wait-chips" id="boardWaitChips"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 5: KIOSK ============ -->
+  <section id="tab-kiosk" class="hidden">
+    <div class="kiosk-wrap">
+      <div class="kiosk-card" id="kioskLookupCard">
+        <h2 class="k-title">셀프 접수</h2>
+        <p class="k-sub">이름과 전화번호 뒤 4자리를 입력한 뒤 [대기번호 발급]을 누르세요.</p>
+
+        <div class="kiosk-field">
+          <label for="kioskName">이름</label>
+          <input type="text" id="kioskName" placeholder="이름을 입력하세요" autocomplete="off">
+        </div>
+
+        <div class="kiosk-field">
+          <label>전화번호 뒤 4자리</label>
+          <div class="k-phone-display" id="kioskPhoneDisplay"><span class="ph">●</span><span class="ph">●</span><span class="ph">●</span><span class="ph">●</span></div>
+          <div class="keypad" id="kioskKeypad">
+            <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+            <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+            <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+            <button class="k-back" data-k="back">지우기</button>
+            <button data-k="0">0</button>
+            <button class="k-submit" data-k="submit">발급</button>
+          </div>
+        </div>
+
+        <button class="kiosk-submit-lg" id="btnKioskSubmit">대기번호 발급</button>
+        <button class="kiosk-ghost-btn-lg" id="btnKioskGoWalkin">사전 신청을 안 하셨나요? 현장 접수하기</button>
+        <div id="kioskResult"></div>
+      </div>
+
+      <div class="kiosk-card" id="kioskWalkinCard" style="display:none;"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 6: RECORDS (회차 기록) ============ -->
+  <section id="tab-records" class="hidden">
+    <div class="panel">
+      <div class="flex-between">
+        <h2 class="section-title">회차별 기록</h2>
+        <button class="btn" id="btnReloadRecords">새로고침</button>
+      </div>
+      <p class="section-sub">[전체 초기화]를 누를 때마다 진행하던 회차가 자동으로 보관됩니다. 아래에서 지난 회차의 통계와 명단을 확인할 수 있습니다.</p>
+      <div id="recordsSummary"></div>
+    </div>
+
+    <div class="panel">
+      <h2 class="section-title" id="recordsDetailTitle">회차 명단</h2>
+      <div id="recordsRoundBtns" style="margin:8px 0 12px;"></div>
+      <div class="table-scroll" id="recordsDetailWrap"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 7: REPORT ============ -->
+  <section id="tab-report" class="hidden">
+    <div class="panel">
+      <div class="flex-between">
+        <h2 class="section-title">📊 회차별 결과보고서</h2>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <select id="reportRoundSelect" class="mini-select" style="max-width:240px; font-size:13px; padding:7px 10px;"></select>
+          <button class="btn btn-danger" id="btnDeleteReportRound">🗑️ 이 회차 삭제</button>
+          <button class="btn btn-ghost" id="btnPrintReport">🖨️ 인쇄 / PDF 저장</button>
+        </div>
+      </div>
+      <p class="section-sub">회차를 선택하면 해당 회차의 통계가 표시됩니다. "현재 진행중"은 아직 [전체 초기화]하지 않은 지금 데이터를 실시간으로 보여줘요.</p>
+    </div>
+    <div id="reportContent"></div>
+  </section>
+
+</main>
+
+<script>
+/* ================= SUPABASE CONFIG ================= */
+const SUPABASE_URL = 'https://zagofytactzqiaifnbks.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ZRyZG81yfXAPfUk0qw4yiQ_QQopPAFJ';
+const REST = SUPABASE_URL + '/rest/v1/';
+const SB_HEADERS = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_KEY,
+  'Content-Type': 'application/json'
+};
+
+async function sbFetch(path, opts){
+  const res = await fetch(REST + path, Object.assign({ headers: SB_HEADERS }, opts || {}));
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error('Supabase 오류 ' + res.status + ': ' + t);
+  }
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+function sbSelect(table, query){ return sbFetch(table + (query ? ('?' + query) : ''), { method:'GET' }); }
+function sbInsert(table, rows){
+  return sbFetch(table, { method:'POST', headers: Object.assign({}, SB_HEADERS, {'Prefer':'return=minimal'}), body: JSON.stringify(rows) });
+}
+function sbUpdate(table, filter, patch){
+  return sbFetch(table + '?' + filter, { method:'PATCH', headers: Object.assign({}, SB_HEADERS, {'Prefer':'return=minimal'}), body: JSON.stringify(patch) });
+}
+function sbDelete(table, filter){
+  return sbFetch(table + '?' + filter, { method:'DELETE', headers: Object.assign({}, SB_HEADERS, {'Prefer':'return=minimal'}) });
+}
+function sbRpc(fn, args){
+  return sbFetch('rpc/' + fn, { method:'POST', body: JSON.stringify(args || {}) });
+}
+
+function setConn(ok, msg){
+  const el = document.getElementById('connPill');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'conn-pill ' + (ok ? 'ok' : 'bad');
+}
+
+/* ================= STATE ================= */
+const state = {
+  students: [],   // camelCase mapped from DB
+  desks: [],
+};
+let currentTab = 'admin';
+let issuedTicketStudentId = null;
+const lastCallSeen = {};      // deskId -> ISO string of last announced called_at
+let callDetectionPrimed = false;
+
+/* ================= AUDIO / VOICE ================= */
+let audioCtx = null;
+function ensureAudioCtx(){
+  if(!audioCtx){ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  if(audioCtx.state === 'suspended'){ audioCtx.resume(); }
+  return audioCtx;
+}
+function playDingDong(){
+  const ctx = ensureAudioCtx();
+  const now = ctx.currentTime;
+  const tone = (freq, start, dur, gainPeak) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, now + start);
+    gain.gain.linearRampToValueAtTime(gainPeak, now + start + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + start + dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now + start);
+    osc.stop(now + start + dur + 0.05);
+  };
+  tone(880, 0, 0.55, 0.5);
+  tone(659.25, 0.32, 0.75, 0.45);
+}
+function pickKoreanVoice(){
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = ['yuna','sunhi','heami','female','여성','한국'];
+  const koVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ko'));
+  for(const key of preferred){
+    const found = koVoices.find(v => v.name.toLowerCase().includes(key));
+    if(found) return found;
+  }
+  return koVoices[0] || null;
+}
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ko-KR';
+  utter.rate = 1.0;
+  utter.pitch = 1.25;
+  utter.volume = 1.0;
+  const v = pickKoreanVoice();
+  if(v) utter.voice = v;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utter);
+}
+function sinoKorean(n){
+  if(n === 0) return '영';
+  const digitNames = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+  const unitNames = ['', '십', '백', '천'];
+  const str_n = String(n);
+  const len = str_n.length;
+  let out = '';
+  for(let i = 0; i < len; i++){
+    const d = parseInt(str_n[i], 10);
+    const placeIdx = len - i - 1;
+    if(d === 0) continue;
+    if(d === 1 && placeIdx > 0){ out += unitNames[placeIdx]; }
+    else { out += digitNames[d] + unitNames[placeIdx]; }
+  }
+  return out;
+}
+function announce(ticketNumber, deskIndex){
+  playDingDong();
+  setTimeout(() => {
+    speak(sinoKorean(ticketNumber) + '번 학생, ' + sinoKorean(deskIndex) + '번 자리로 오십시오.');
+  }, 1150);
+}
+if('speechSynthesis' in window){ window.speechSynthesis.onvoiceschanged = () => {}; }
+
+/* ================= HELPERS ================= */
+function studentById(id){ return state.students.find(s => s.id === id); }
+function deskById(id){ return state.desks.find(d => d.id === id); }
+function waitingStudents(){
+  return state.students.filter(s => s.status === 'waiting').sort((a,b) => a.ticketNumber - b.ticketNumber);
+}
+function deskIndexOf(deskId){ return state.desks.findIndex(d => d.id === deskId) + 1; }
+function statusBadge(status){
+  const map = {
+    not_arrived: ['b-notarrived','미도착'],
+    waiting: ['b-wait','대기중'],
+    in_progress: ['b-progress','상담중'],
+    done: ['b-done','완료'],
+    no_show: ['b-noshow','미응답'],
+  };
+  const [cls, label] = map[status] || ['b-notarrived', status];
+  return '<span class="badge ' + cls + '">' + label + '</span>';
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* ================= DB <-> STATE MAPPING ================= */
+function mapStudent(r){
+  return {
+    id: r.id, name: r.name || '', org: r.org || '',
+    phone1: r.phone1 || '', phone2: r.phone2 || '',
+    region: r.region || '', grade: r.grade || '', refTeacher: r.ref_teacher || '',
+    team: r.team || '', itTour: !!r.it_tour, wantsConsult: !!r.wants_consult,
+    note: r.note || '', consultType: r.consult_type || '', consultTeacher: r.consult_teacher || '',
+    gender: r.gender || '', assignedTeacher: r.assigned_teacher || '', interestedDepartment: r.interested_department || '',
+    consultStartedAt: r.consult_started_at || null, consultCompletedAt: r.consult_completed_at || null,
+    infoSource: r.info_source || '',
+    companionSelf: !!r.companion_self, companionMother: !!r.companion_mother, companionFather: !!r.companion_father,
+    companionSibling: !!r.companion_sibling, companionRelative: !!r.companion_relative, companionOther: !!r.companion_other,
+    status: r.status || 'not_arrived',
+    ticketNumber: (r.ticket_number === null || r.ticket_number === undefined) ? null : r.ticket_number,
+    deskId: (r.desk_id === null || r.desk_id === undefined) ? null : r.desk_id
+  };
+}
+function mapDesk(r){
+  return {
+    id: r.id, teacher: r.teacher || '', position: r.position || 0, department: r.department || '',
+    currentStudentId: (r.current_student_id === null || r.current_student_id === undefined) ? null : r.current_student_id,
+    calledTicket: (r.called_ticket === null || r.called_ticket === undefined) ? null : r.called_ticket,
+    calledAt: r.called_at || null
+  };
+}
+
+let lastSignature = '';
+let isEditingText = false;
+
+async function fetchState(opts){
+  opts = opts || {};
+  try {
+    const [students, desks] = await Promise.all([
+      sbSelect('students', 'select=*&order=id.asc'),
+      sbSelect('desks', 'select=*&order=position.asc,id.asc')
+    ]);
+    state.students = (students || []).map(mapStudent);
+    state.desks = (desks || []).map(mapDesk);
+    setConn(true, '실시간 연결됨');
+    if(!opts.skipDetect) detectCalls();
+    const sig = JSON.stringify(state.students) + '|' + JSON.stringify(state.desks) + '|' + issuedTicketStudentId;
+    if(sig !== lastSignature){
+      lastSignature = sig;
+      render();
+    } else if(currentTab === 'board'){
+      renderBoard();
+      renderBoardWindow();
+    }
+  } catch(err){
+    setConn(false, '연결 오류 (재시도 중)');
+    console.error(err);
+  }
+}
+
+/* Announce a call once per device when a desk's called_at advances.
+   Only the device(s) currently showing the 전광판(board) tab or board pop-out
+   window will actually speak, so having the app open on multiple staff PCs
+   at the same time doesn't cause the announcement to play more than once. */
+function detectCalls(){
+  const boardActive = (currentTab === 'board') || (boardWindow && !boardWindow.closed);
+  state.desks.forEach((d) => {
+    if(!d.calledAt) return;
+    const prev = lastCallSeen[d.id];
+    const isNew = !prev || (Date.parse(d.calledAt) > Date.parse(prev));
+    lastCallSeen[d.id] = d.calledAt;
+    if(!callDetectionPrimed) return;           // don't replay history on first load
+    if(isNew && d.calledTicket && boardActive){
+      const age = Date.now() - Date.parse(d.calledAt);
+      if(age < 25000){ announce(d.calledTicket, d.position || 1); }
+    }
+  });
+  callDetectionPrimed = true;
+}
+
+/* ================= ACTIONS (write to Supabase) ================= */
+function parsePhone(raw){ return String(raw || '').replace(/[^0-9]/g, ''); }
+
+async function bulkAddStudents(text){
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const rows = [];
+  lines.forEach(line => {
+    const parts = line.split(',').map(s => s ? s.trim() : '');
+    const name = parts[0];
+    if(!name) return;
+    rows.push({ name: name, org: parts[1] || '', phone1: parsePhone(parts[2]) , status: 'not_arrived' });
+  });
+  if(rows.length === 0){ alert('추가할 학생이 없습니다. 성명이 입력되었는지 확인해주세요.'); return; }
+  try { await sbInsert('students', rows); } catch(e){ alert('명단 저장 중 오류: ' + e.message); return; }
+  await fetchState();
+  alert(rows.length + '명이 명단에 추가되었습니다.');
+}
+
+async function checkInStudent(id){
+  try {
+    const r = await sbRpc('staff_checkin', { p_id: id });
+    if(r && r.result === 'ok'){ issuedTicketStudentId = id; }
+    else if(r && r.result === 'already'){ alert('이미 접수된 학생입니다. (대기번호 ' + r.ticket + '번)'); issuedTicketStudentId = id; }
+  } catch(e){ alert('접수 중 오류: ' + e.message); }
+  await fetchState();
+  renderCheckin();
+}
+
+async function walkinCheckIn(name, org){
+  try {
+    const r = await sbRpc('walkin_checkin', { p_name: name, p_org: org || '' });
+    if(r && r.result === 'ok'){ issuedTicketStudentId = r.id; }
+  } catch(e){ alert('현장 접수 중 오류: ' + e.message); return; }
+  await fetchState();
+  renderCheckin();
+}
+
+function showIssuedTicket(s){ issuedTicketStudentId = s.id; renderCheckin(); }
+
+async function assignStudentToDesk(studentId, deskId){
+  const desk = deskById(deskId);
+  const student = studentById(studentId);
+  if(!desk || !student) return;
+  if(desk.currentStudentId){ alert('이미 상담 중인 자리입니다. 다른 자리를 선택해주세요.'); return; }
+  ensureAudioCtx();
+  const nowIso = new Date().toISOString();
+  try {
+    await sbUpdate('students', 'id=eq.' + studentId, {
+      status: 'in_progress', desk_id: deskId, consult_teacher: desk.teacher, consult_started_at: nowIso
+    });
+    await sbUpdate('desks', 'id=eq.' + deskId, {
+      current_student_id: studentId, called_ticket: student.ticketNumber, called_at: nowIso
+    });
+  } catch(e){ alert('배정 중 오류: ' + e.message); return; }
+  lastCallSeen[deskId] = nowIso; // 이 기기에서 이미 방송했으니, 폴링에서 또 방송하지 않도록 표시
+  announce(student.ticketNumber, desk.position || 1);
+  await fetchState({ skipDetect: true });
+}
+
+async function callNext(deskId){
+  ensureAudioCtx();
+  try {
+    const r = await sbRpc('call_next', { p_desk_id: deskId });
+    if(r && r.result === 'empty'){ alert('대기 중인 학생이 없습니다.'); await fetchState(); return; }
+  } catch(e){ alert('호출 중 오류: ' + e.message); await fetchState(); return; }
+  await fetchState({ skipDetect: true });
+  const desk = state.desks.find(d => d.id === deskId);
+  if(desk && desk.currentStudentId){
+    try { await sbUpdate('students', 'id=eq.' + desk.currentStudentId, { consult_started_at: new Date().toISOString() }); }
+    catch(e){ console.error(e); }
+  }
+  if(desk && desk.calledTicket && desk.calledAt){
+    lastCallSeen[deskId] = desk.calledAt;
+    announce(desk.calledTicket, desk.position || 1);
+  }
+}
+async function repeatCall(deskId){
+  ensureAudioCtx();
+  try { await sbRpc('repeat_call', { p_desk_id: deskId }); } catch(e){ alert('오류: ' + e.message); }
+  await fetchState({ skipDetect: true });
+  const desk = state.desks.find(d => d.id === deskId);
+  if(desk && desk.calledTicket && desk.calledAt){
+    lastCallSeen[deskId] = desk.calledAt;
+    announce(desk.calledTicket, desk.position || 1);
+  }
+}
+async function finishConsult(deskId){
+  const desk = state.desks.find(d => d.id === deskId);
+  const studentId = desk ? desk.currentStudentId : null;
+  try { await sbRpc('finish_consult', { p_desk_id: deskId }); } catch(e){ alert('오류: ' + e.message); return; }
+  if(studentId){
+    try { await sbUpdate('students', 'id=eq.' + studentId, { consult_completed_at: new Date().toISOString() }); }
+    catch(e){ console.error(e); }
+  }
+  await fetchState();
+}
+async function markNoShow(deskId){
+  try { await sbRpc('no_show', { p_desk_id: deskId }); } catch(e){ alert('오류: ' + e.message); }
+  await fetchState();
+}
+async function cancelAssignment(deskId){
+  const desk = state.desks.find(d => d.id === deskId);
+  const studentId = desk ? desk.currentStudentId : null;
+  if(!studentId) return;
+  const student = studentById(studentId);
+  const name = student ? student.name : '이 학생';
+  if(!confirm(name + ' 배정을 취소하고 다시 대기열로 되돌릴까요?\n(호출 기록은 없던 일이 됩니다)')) return;
+  try {
+    await sbUpdate('students', 'id=eq.' + studentId, {
+      status: 'waiting', desk_id: null, consult_teacher: '', consult_started_at: null
+    });
+    await sbUpdate('desks', 'id=eq.' + deskId, {
+      current_student_id: null, called_ticket: null, called_at: null
+    });
+  } catch(e){ alert('배정 취소 중 오류: ' + e.message); return; }
+  await fetchState();
+}
+async function returnToQueue(id){
+  try { await sbUpdate('students', 'id=eq.' + id, { status:'waiting', desk_id: null }); } catch(e){ alert('오류: ' + e.message); }
+  await fetchState();
+}
+async function addDesk(){
+  const maxPos = state.desks.reduce((m,d) => Math.max(m, d.position || 0), 0);
+  try { await sbInsert('desks', [{ teacher: (state.desks.length+1) + '번 데스크 선생님', position: maxPos + 1 }]); }
+  catch(e){ alert('오류: ' + e.message); }
+  await fetchState();
+}
+async function removeDesk(deskId){
+  const desk = deskById(deskId);
+  if(desk && desk.currentStudentId){ alert('상담 중인 데스크는 삭제할 수 없습니다. 먼저 상담을 완료해주세요.'); return; }
+  try { await sbDelete('desks', 'id=eq.' + deskId); } catch(e){ alert('오류: ' + e.message); }
+  await fetchState();
+}
+let renameTimers = {};
+function renameDesk(deskId, val){
+  const desk = deskById(deskId);
+  if(desk) desk.teacher = val;
+  clearTimeout(renameTimers[deskId]);
+  renameTimers[deskId] = setTimeout(async () => {
+    try { await sbUpdate('desks', 'id=eq.' + deskId, { teacher: val }); } catch(e){ console.error(e); }
+  }, 600);
+}
+let deptTimers = {};
+function renameDeskDept(deskId, val){
+  const desk = deskById(deskId);
+  if(desk) desk.department = val;
+  clearTimeout(deptTimers[deskId]);
+  deptTimers[deskId] = setTimeout(async () => {
+    try { await sbUpdate('desks', 'id=eq.' + deskId, { department: val }); await fetchState(); } catch(e){ console.error(e); }
+  }, 600);
+}
+async function resetAll(){
+  if(!confirm('전체 학생 명단과 접수 현황을 초기화합니다. 계속할까요?')) return;
+  try { await sbRpc('reset_all', {}); } catch(e){ alert('오류: ' + e.message); return; }
+  issuedTicketStudentId = null;
+  Object.keys(lastCallSeen).forEach(k => delete lastCallSeen[k]);
+  await fetchState();
+}
+
+async function deleteRound(rn){
+  if(!confirm(rn + '회차 기록을 삭제할까요?\n삭제하면 되돌릴 수 없습니다.')) return;
+  try {
+    await sbRpc('delete_round', { p_round: rn });
+  } catch(e){
+    alert('삭제 오류: ' + e.message);
+    return;
+  }
+  if(recordsSelectedRound === rn) recordsSelectedRound = null;
+  await loadRecords();
+  if(typeof loadReportRounds === 'function'){
+    const sel = document.getElementById('reportRoundSelect');
+    if(sel && sel.value === String(rn)) sel.value = 'live';
+    await loadReportRounds();
+  }
+}
+
+/* ================= KIOSK (self check-in) ================= */
+let kioskDigits = '';
+function renderKioskPhone(){
+  const el = document.getElementById('kioskPhoneDisplay');
+  if(!el) return;
+  let html = '';
+  for(let i = 0; i < 4; i++){
+    if(i < kioskDigits.length){ html += '<span>' + kioskDigits[i] + '</span>'; }
+    else { html += '<span class="ph">●</span>'; }
+  }
+  el.innerHTML = html;
+}
+function kioskReset(){
+  kioskDigits = '';
+  const nm = document.getElementById('kioskName');
+  if(nm) nm.value = '';
+  renderKioskPhone();
+  const r = document.getElementById('kioskResult');
+  if(r) r.innerHTML = '';
+}
+let kioskResetTimer = null;
+async function kioskSubmit(){
+  ensureAudioCtx();
+  const nameEl = document.getElementById('kioskName');
+  const resultEl = document.getElementById('kioskResult');
+  const name = (nameEl.value || '').trim();
+  if(!name){ resultEl.innerHTML = '<div class="kiosk-result err"><div class="r-msg">이름을 입력해주세요.</div></div>'; return; }
+  if(kioskDigits.length !== 4){ resultEl.innerHTML = '<div class="kiosk-result err"><div class="r-msg">전화번호 뒤 4자리를 입력해주세요.</div></div>'; return; }
+  resultEl.innerHTML = '<div class="kiosk-result warn"><div class="r-msg">확인 중입니다…</div></div>';
+  let r;
+  try { r = await sbRpc('kiosk_checkin', { p_name: name, p_last4: kioskDigits }); }
+  catch(e){ resultEl.innerHTML = '<div class="kiosk-result err"><div class="r-msg">네트워크 오류입니다. 잠시 후 다시 시도해주세요.</div></div>'; return; }
+
+  if(r && r.result === 'ok'){
+    playDingDong();
+    resultEl.innerHTML =
+      '<div class="kiosk-result ok">' +
+        '<div class="r-lbl">대기번호 발급 완료</div>' +
+        '<div class="r-num">' + r.ticket + '</div>' +
+        '<div class="r-name">' + escapeHtml(r.name) + ' 학생, 호명 시까지 잠시 기다려 주세요.</div>' +
+      '</div>';
+    scheduleKioskReset();
+    fetchState();
+  } else if(r && r.result === 'already'){
+    resultEl.innerHTML =
+      '<div class="kiosk-result warn">' +
+        '<div class="r-lbl">이미 접수됨</div>' +
+        '<div class="r-num">' + r.ticket + '</div>' +
+        '<div class="r-name">' + escapeHtml(r.name) + ' 학생은 이미 접수되었습니다. 호명을 기다려 주세요.</div>' +
+      '</div>';
+    scheduleKioskReset();
+  } else {
+    startKioskWalkin(name);
+  }
+}
+function scheduleKioskReset(){
+  clearTimeout(kioskResetTimer);
+  kioskResetTimer = setTimeout(kioskReset, 8000);
+}
+
+/* ---- Kiosk walk-in (현장 접수) wizard ---- */
+let kioskWalkinStep = null; // null | 'notfound' | 'step1' | 'step2'
+let kioskWalkinData = {};
+
+function kioskShowLookup(){
+  document.getElementById('kioskLookupCard').style.display = '';
+  document.getElementById('kioskWalkinCard').style.display = 'none';
+}
+function kioskShowWalkinCard(){
+  document.getElementById('kioskLookupCard').style.display = 'none';
+  document.getElementById('kioskWalkinCard').style.display = '';
+  renderKioskWalkin();
+}
+function startKioskWalkin(prefillName){
+  clearTimeout(kioskResetTimer);
+  kioskWalkinData = {
+    name: prefillName || '', phone: '', org: '', region: '', grade: '',
+    gender: '', companionSelf: false, companionMother: false, companionFather: false,
+    companionSibling: false, companionRelative: false, companionOther: false,
+    wantsConsult: null, infoSource: ''
+  };
+  kioskWalkinStep = 'notfound';
+  kioskShowWalkinCard();
+}
+
+function renderKioskWalkin(){
+  const card = document.getElementById('kioskWalkinCard');
+  if(kioskWalkinStep === 'notfound'){
+    card.innerHTML =
+      '<h2 class="k-title">사전 신청 내역 없음</h2>' +
+      '<p class="k-sub">입력하신 정보로 등록된 신청 내역을 찾지 못했습니다.<br>현장 접수로 진행하시겠습니까?</p>' +
+      '<button class="kiosk-submit-lg" id="btnWalkinProceed">현장 접수 진행</button>' +
+      '<button class="kiosk-ghost-btn-lg" id="btnWalkinCancel">다시 입력하기</button>';
+  } else if(kioskWalkinStep === 'step1'){
+    card.innerHTML =
+      '<h2 class="k-title">현장 접수</h2>' +
+      '<p class="k-sub">사전 신청 내역 없음 — 아래 정보를 입력해주세요.</p>' +
+      '<div class="kiosk-field"><label>이름</label><input type="text" id="wkName" value="' + escapeHtml(kioskWalkinData.name) + '" placeholder="홍길동"></div>' +
+      '<div class="kiosk-field"><label>연락처</label><input type="text" id="wkPhone" value="' + escapeHtml(kioskWalkinData.phone) + '" placeholder="010-0000-0000"></div>' +
+      '<div class="kiosk-field"><label>출신 중학교</label><input type="text" id="wkOrg" value="' + escapeHtml(kioskWalkinData.org) + '" placeholder="OO중학교"></div>' +
+      '<div class="kiosk-field"><label>지역</label><input type="text" id="wkRegion" value="' + escapeHtml(kioskWalkinData.region) + '" placeholder="서울 강남구"></div>' +
+      '<div class="kiosk-field"><label>학년</label><select id="wkGrade">' +
+        '<option value="">선택</option>' +
+        ['중1','중2','중3','기타'].map(g => '<option value="' + g + '"' + (kioskWalkinData.grade === g ? ' selected' : '') + '>' + g + '</option>').join('') +
+      '</select></div>' +
+      '<button class="kiosk-submit-lg" id="btnWalkinNext">다음 →</button>' +
+      '<button class="kiosk-ghost-btn-lg" id="btnWalkinCancel">취소</button>';
+  } else if(kioskWalkinStep === 'step2'){
+    const genderBtn = (val, label) => '<button type="button" class="wk-toggle' + (kioskWalkinData.gender === val ? ' active' : '') + '" data-gender="' + val + '">' + label + '</button>';
+    const consultBtn = (val, label) => '<button type="button" class="wk-toggle' + (kioskWalkinData.wantsConsult === val ? ' active' : '') + '" data-consult="' + val + '">' + label + '</button>';
+    const compChk = (key, label) => '<label><input type="checkbox" data-comp="' + key + '"' + (kioskWalkinData[key] ? ' checked' : '') + '> ' + label + '</label>';
+    const confirmSub = [kioskWalkinData.org, kioskWalkinData.grade, kioskWalkinData.region].filter(Boolean).map(escapeHtml).join(' · ');
+    card.innerHTML =
+      '<h2 class="k-title">정보 확인 및 선택</h2>' +
+      '<div class="wk-confirm-box"><b>' + escapeHtml(kioskWalkinData.name) + '</b>' +
+        (confirmSub ? '<div class="wk-confirm-sub">' + confirmSub + '</div>' : '') +
+      '</div>' +
+      '<div class="kiosk-field"><label>학생 성별</label><div class="wk-toggle-row">' + genderBtn('남', '🧑 남자') + genderBtn('여', '👩 여자') + '</div></div>' +
+      '<div class="kiosk-field"><label>함께 오신 분 (복수 선택 가능)</label><div class="wk-check-grid">' +
+        compChk('companionSelf', '🧑\u200d🎓 학생 본인') + compChk('companionMother', '👩 어머니') +
+        compChk('companionFather', '👨 아버지') + compChk('companionSibling', '👫 형제/자매') +
+        compChk('companionRelative', '👪 친인척') + compChk('companionOther', '➕ 기타') +
+      '</div></div>' +
+      '<div class="kiosk-field"><label>입학 상담 희망 여부</label><div class="wk-toggle-row">' + consultBtn(true, '✅ 희망합니다') + consultBtn(false, '❌ 괜찮습니다') + '</div></div>' +
+      '<div class="kiosk-field"><label>미림마이스터고를 어떻게 알게 되셨나요?</label>' +
+        '<select id="wkInfoSource"><option value="">선택해주세요</option>' +
+        INFO_SOURCES.map(s => '<option value="' + escapeHtml(s) + '"' + (kioskWalkinData.infoSource === s ? ' selected' : '') + '>' + escapeHtml(s) + '</option>').join('') +
+        '</select></div>' +
+      '<button class="kiosk-submit-lg" id="btnWalkinSubmit" style="background:var(--mint);">✅ 접수 완료</button>' +
+      '<button class="kiosk-ghost-btn-lg" id="btnWalkinBack">← 이전</button>';
+  }
+}
+
+async function kioskWalkinSubmit(){
+  if(!kioskWalkinData.name){ alert('이름을 입력해주세요.'); return; }
+  const btn = document.getElementById('btnWalkinSubmit');
+  if(btn){ btn.disabled = true; btn.textContent = '접수 중...'; }
+
+  let r;
+  try { r = await sbRpc('walkin_checkin', { p_name: kioskWalkinData.name, p_org: kioskWalkinData.org || '' }); }
+  catch(e){
+    alert('접수 중 오류가 발생했습니다: ' + e.message);
+    if(btn){ btn.disabled = false; btn.textContent = '✅ 접수 완료'; }
+    return;
+  }
+  if(!r || r.result !== 'ok' || !r.id){
+    alert('접수 중 오류가 발생했습니다. 안내 데스크에 문의해주세요.');
+    if(btn){ btn.disabled = false; btn.textContent = '✅ 접수 완료'; }
+    return;
+  }
+
+  try {
+    await sbUpdate('students', 'id=eq.' + r.id, {
+      phone1: kioskWalkinData.phone,
+      region: kioskWalkinData.region,
+      grade: kioskWalkinData.grade,
+      gender: kioskWalkinData.gender,
+      companion_self: kioskWalkinData.companionSelf,
+      companion_mother: kioskWalkinData.companionMother,
+      companion_father: kioskWalkinData.companionFather,
+      companion_sibling: kioskWalkinData.companionSibling,
+      companion_relative: kioskWalkinData.companionRelative,
+      companion_other: kioskWalkinData.companionOther,
+      wants_consult: kioskWalkinData.wantsConsult === true,
+      info_source: kioskWalkinData.infoSource
+    });
+  } catch(e){ console.error(e); }
+
+  playDingDong();
+  kioskShowLookup();
+  const resultEl = document.getElementById('kioskResult');
+  resultEl.innerHTML =
+    '<div class="kiosk-result ok">' +
+      '<div class="r-lbl">대기번호 발급 완료</div>' +
+      '<div class="r-num">' + r.ticket + '</div>' +
+      '<div class="r-name">' + escapeHtml(r.name) + ' 학생, 호명 시까지 잠시 기다려 주세요.</div>' +
+    '</div>';
+  scheduleKioskReset();
+  await fetchState();
+}
+
+/* ================= EXCEL IMPORT / EXPORT ================= */
+const EXCEL_HEADERS = [
+  '성명','연락처1','연락처2','출신학교','지역','학년','성별','담당교사(홍보)','정보취득경로',
+  '상담희망(Y/N)','관심학과',
+  '동반자_본인(Y/N)','동반자_어머니(Y/N)','동반자_아버지(Y/N)','동반자_형제자매(Y/N)','동반자_친인척(Y/N)','동반자_기타(Y/N)',
+  '비고'
+];
+function downloadExcelTemplate(){
+  if(typeof XLSX === 'undefined'){ alert('엑셀 기능을 불러오지 못했습니다. 인터넷 연결을 확인해주세요.'); return; }
+  const sample = [
+    '김민준','[PHONE_NUMBER]','[PHONE_NUMBER]','서울OO중학교','서울 관악구','중3','남','이OO 선생님','학교 홈페이지',
+    'Y','디자인과',
+    'Y','Y','N','N','N','N',
+    ''
+  ];
+  const note = ['(관심학과: 미정/디자인과/소프트웨어과/모두 희망 중 하나, 성별: 남/여, 학년: 중1/중2/중3/기타)'];
+  const ws = XLSX.utils.aoa_to_sheet([EXCEL_HEADERS, sample, note]);
+  ws['!cols'] = EXCEL_HEADERS.map(() => ({ wch: 16 }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '명단');
+  XLSX.writeFile(wb, '미림마이스터고_입학설명회_명단양식.xlsx');
+}
+function truthyYN(v){ return /^(y|yes|예|o|true|1|참석|희망)$/i.test(String(v || '').trim()); }
+function handleExcelFile(file){
+  if(typeof XLSX === 'undefined'){ alert('엑셀 기능을 불러오지 못했습니다. 인터넷 연결을 확인해주세요.'); return; }
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    let rows = [];
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      raw.forEach(row => {
+        const name = String(row['성명'] || row['이름'] || '').trim();
+        if(!name) return;
+        const genderRaw = String(row['성별'] || '').trim();
+        const gender = (genderRaw === '남' || genderRaw === '여') ? genderRaw : '';
+        const interestRaw = String(row['관심학과'] || '').trim();
+        const interest = INTEREST_DEPARTMENTS.indexOf(interestRaw) >= 0 ? interestRaw : '';
+        rows.push({
+          name: name,
+          org: String(row['출신학교'] || '').trim(),
+          phone1: parsePhone(row['연락처1']),
+          phone2: parsePhone(row['연락처2']),
+          region: String(row['지역'] || '').trim(),
+          grade: String(row['학년'] || '').trim(),
+          gender: gender,
+          ref_teacher: String(row['담당교사(홍보)'] || row['담당교사'] || '').trim(),
+          info_source: String(row['정보취득경로'] || '').trim(),
+          wants_consult: truthyYN(row['상담희망(Y/N)'] || row['상담희망']),
+          interested_department: interest,
+          companion_self: truthyYN(row['동반자_본인(Y/N)'] || row['동반자_본인']),
+          companion_mother: truthyYN(row['동반자_어머니(Y/N)'] || row['동반자_어머니']),
+          companion_father: truthyYN(row['동반자_아버지(Y/N)'] || row['동반자_아버지']),
+          companion_sibling: truthyYN(row['동반자_형제자매(Y/N)'] || row['동반자_형제자매']),
+          companion_relative: truthyYN(row['동반자_친인척(Y/N)'] || row['동반자_친인척']),
+          companion_other: truthyYN(row['동반자_기타(Y/N)'] || row['동반자_기타']),
+          note: String(row['비고'] || '').trim(),
+          status: 'not_arrived'
+        });
+      });
+    } catch(err){
+      alert('엑셀 파일을 읽는 중 오류가 발생했습니다. [엑셀 양식 다운로드] 파일의 열 제목을 그대로 유지한 채 업로드해주세요.');
+      document.getElementById('excelFile').value = '';
+      return;
+    }
+    document.getElementById('excelFile').value = '';
+    if(rows.length === 0){ alert('추가된 학생이 없습니다. 성명 열이 채워져 있는지 확인해주세요.'); return; }
+    try { await sbInsert('students', rows); } catch(e2){ alert('저장 중 오류: ' + e2.message); return; }
+    await fetchState();
+    alert(rows.length + '명이 명단에 추가되었습니다.');
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ================= DASHBOARD / BADGES ================= */
+function computeStats(){
+  const total = state.students.length;
+  const arrived = state.students.filter(s => s.status !== 'not_arrived').length;
+  const notArrived = total - arrived;
+  const rate = total > 0 ? Math.round((arrived / total) * 1000) / 10 : 0;
+  const wantConsult = state.students.filter(s => s.wantsConsult).length;
+  const consultDone = state.students.filter(s => s.status === 'done').length;
+  const male = state.students.filter(s => s.gender === '남').length;
+  const female = state.students.filter(s => s.gender === '여').length;
+  const durations = state.students
+    .filter(s => s.consultStartedAt && s.consultCompletedAt)
+    .map(s => (Date.parse(s.consultCompletedAt) - Date.parse(s.consultStartedAt)) / 60000)
+    .filter(m => m >= 0);
+  const avgMinutes = durations.length ? Math.round((durations.reduce((a,b) => a+b, 0) / durations.length) * 10) / 10 : null;
+  return { total, arrived, notArrived, rate, wantConsult, consultDone, male, female, avgMinutes };
+}
+function teamBadge(team){
+  if(!team) return '-';
+  const cls = team === 'A' ? 'team-A' : team === 'B' ? 'team-B' : team === 'C' ? 'team-C' : '';
+  return '<span class="badge-team ' + cls + '">' + escapeHtml(team) + '팀</span>';
+}
+function ynMark(v){ return v ? '<span class="yn-yes">✓</span>' : '<span class="yn-no">-</span>'; }
+const INFO_SOURCES = ['학교 홈페이지', '학교 방문 홍보', '재학생/졸업생 소개', 'SNS', '기타'];
+const INTEREST_DEPARTMENTS = ['디자인과', '소프트웨어과', '모두 희망'];
+
+const REGION_DATA = {
+  '서울': ['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+  '인천': ['강화군','계양구','남동구','동구','미추홀구','부평구','서구','연수구','옹진군','중구'],
+  '경기': ['가평군','고양시','과천시','광명시','광주시','구리시','군포시','김포시','남양주시','동두천시','부천시','성남시','수원시','시흥시','안산시','안성시','안양시','양주시','양평군','여주시','연천군','오산시','용인시','의왕시','의정부시','이천시','파주시','평택시','포천시','하남시','화성시'],
+  '부산': ['강서구','금정구','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구','기장군'],
+  '대구': ['남구','달서구','동구','북구','서구','수성구','중구','달성군','군위군'],
+  '광주': ['광산구','남구','동구','북구','서구'],
+  '대전': ['대덕구','동구','서구','유성구','중구'],
+  '울산': ['남구','동구','북구','중구','울주군'],
+  '세종': ['세종시'],
+  '강원': ['춘천시','원주시','강릉시','동해시','태백시','속초시','삼척시','홍천군','횡성군','영월군','평창군','정선군','철원군','화천군','양구군','인제군','고성군','양양군'],
+  '충북': ['청주시','충주시','제천시','보은군','옥천군','영동군','증평군','진천군','괴산군','음성군','단양군'],
+  '충남': ['천안시','공주시','보령시','아산시','서산시','논산시','계룡시','당진시','금산군','부여군','서천군','청양군','홍성군','예산군','태안군'],
+  '전북': ['전주시','군산시','익산시','정읍시','남원시','김제시','완주군','진안군','무주군','장수군','임실군','순창군','고창군','부안군'],
+  '전남': ['목포시','여수시','순천시','나주시','광양시','담양군','곡성군','구례군','고흥군','보성군','화순군','장흥군','강진군','해남군','영암군','무안군','함평군','영광군','장성군','완도군','진도군','신안군'],
+  '경북': ['포항시','경주시','김천시','안동시','구미시','영주시','영천시','상주시','문경시','경산시','의성군','청송군','영양군','영덕군','청도군','고령군','성주군','칠곡군','예천군','봉화군','울진군','울릉군'],
+  '경남': ['창원시','진주시','통영시','사천시','김해시','밀양시','거제시','양산시','의령군','함안군','창녕군','고성군','남해군','하동군','산청군','함양군','거창군','합천군'],
+  '제주': ['제주시','서귀포시']
+};
+const REGION_SIDO_LIST = ['서울','인천','경기','부산','대구','광주','대전','울산','세종','강원','충북','충남','전북','전남','경북','경남','제주'];
+
+function parseRegion(regionStr){
+  regionStr = (regionStr || '').trim();
+  if(!regionStr) return { sido: '', gugun: '' };
+  const sorted = REGION_SIDO_LIST.slice().sort((a,b) => b.length - a.length);
+  for(let i = 0; i < sorted.length; i++){
+    const sido = sorted[i];
+    if(regionStr.indexOf(sido) === 0){
+      return { sido: sido, gugun: regionStr.slice(sido.length).trim() };
+    }
+  }
+  return { sido: '', gugun: regionStr };
+}
+function regionGugunOptionsHtml(sido, selected){
+  const list = REGION_DATA[sido] || [];
+  return list.map(g => '<option value="' + g + '"' + (g === selected ? ' selected' : '') + '>' + g + '</option>').join('');
+}
+const COMPANION_FIELDS = [
+  { field: 'self', col: 'companion_self', label: '학생본인' },
+  { field: 'mother', col: 'companion_mother', label: '어머니' },
+  { field: 'father', col: 'companion_father', label: '아버지' },
+  { field: 'sibling', col: 'companion_sibling', label: '형제자매' },
+  { field: 'relative', col: 'companion_relative', label: '친인척' },
+  { field: 'other', col: 'companion_other', label: '기타' }
+];
+function companionCheckbox(id, field, label, checked){
+  return '<label class="cbx-mini" title="' + label + '"><input type="checkbox" data-companion-id="' + id + '" data-companion-field="' + field + '"' + (checked ? ' checked' : '') + '>' + label + '</label>';
+}
+
+/* ================= RENDER ================= */
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('nav.tabs button').forEach(b => { b.classList.toggle('active', b.dataset.tab === tab); });
+  ['admin','checkin','desks','board','kiosk','records','report'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+  });
+  if(tab === 'records') loadRecords();
+  if(tab === 'report') loadReportRounds();
+  render();
+}
+
+function renderAdmin(){
+  document.getElementById('totalCount').textContent = '(총 ' + state.students.length + '명)';
+  const st = computeStats();
+  document.getElementById('statTotal').textContent = st.total;
+  document.getElementById('statArrived').textContent = st.arrived;
+  document.getElementById('statNotArrived').textContent = st.notArrived;
+  document.getElementById('statRate').textContent = st.rate + '%';
+  document.getElementById('statWantConsult').textContent = st.wantConsult;
+  document.getElementById('statConsultDone').textContent = st.consultDone;
+  document.getElementById('statMale').textContent = st.male;
+  document.getElementById('statFemale').textContent = st.female;
+  document.getElementById('statAvgMinutes').textContent = (st.avgMinutes !== null ? st.avgMinutes : '-');
+
+  const deskEditWrap = document.getElementById('deskEditList');
+  const activeCls = document.activeElement && document.activeElement.classList;
+  const focusedDesk = activeCls && (activeCls.contains('desk-name-input') || activeCls.contains('desk-dept-input'));
+  if(!focusedDesk){
+    deskEditWrap.innerHTML = state.desks.map((d,i) =>
+      '<div class="desk-row">' +
+        '<span class="num" style="width:26px;color:var(--ink-soft);font-weight:700;">' + (i+1) + '</span>' +
+        '<input type="text" value="' + escapeHtml(d.teacher) + '" data-desk-id="' + d.id + '" class="desk-name-input" placeholder="선생님 이름">' +
+        '<input type="text" value="' + escapeHtml(d.department) + '" data-desk-dept-id="' + d.id + '" class="desk-dept-input" placeholder="학과(그룹명)">' +
+        '<button class="small-x" data-remove-desk="' + d.id + '" title="삭제">✕</button>' +
+      '</div>'
+    ).join('') || '<p class="empty">등록된 데스크가 없습니다.</p>';
+  }
+
+  const wrap = document.getElementById('adminTableWrap');
+  if(state.students.length === 0){
+    wrap.innerHTML = '<p class="empty">아직 등록된 학생이 없습니다. 위에서 명단을 추가해 주세요.</p>';
+  } else {
+    const teacherOptions = state.desks.map(d => '<option value="' + escapeHtml(d.teacher) + '">' + escapeHtml(d.teacher) + '</option>').join('');
+    wrap.innerHTML =
+      '<table><thead><tr>' +
+        '<th>No</th><th>성명</th><th>편집</th><th>연락처1</th><th>연락처2</th><th>출신학교</th><th>지역</th><th>학년</th><th>성별</th><th>동반자</th>' +
+        '<th>담당교사(홍보)</th><th>정보취득경로</th><th>참석여부</th><th>번호표</th><th>관심학과</th>' +
+        '<th>상담희망</th><th>배정 선생님</th><th>호출 선생님</th><th>상담완료</th><th>상담소요(분)</th><th>상담구분</th><th>비고</th>' +
+      '</tr></thead><tbody>' +
+      state.students.map((s,i) => {
+        const dur = (s.consultStartedAt && s.consultCompletedAt)
+          ? Math.round(((Date.parse(s.consultCompletedAt) - Date.parse(s.consultStartedAt)) / 60000) * 10) / 10
+          : null;
+        return '<tr>' +
+          '<td class="num">' + (i+1) + '</td>' +
+          '<td>' + escapeHtml(s.name) + '</td>' +
+          '<td><button class="btn btn-ghost" style="padding:5px 10px; font-size:12px;" data-edit-student="' + s.id + '">✏️ 편집</button></td>' +
+          '<td class="num">' + (escapeHtml(s.phone1) || '-') + '</td>' +
+          '<td class="num">' + (escapeHtml(s.phone2) || '-') + '</td>' +
+          '<td>' + (escapeHtml(s.org) || '-') + '</td>' +
+          '<td>' + (function(){
+            const pr = parseRegion(s.region);
+            return '<div style="display:flex; gap:4px;">' +
+              '<select class="mini-select" data-region-sido-id="' + s.id + '" style="max-width:64px;">' +
+                '<option value=""' + (pr.sido === '' ? ' selected' : '') + '>-</option>' +
+                REGION_SIDO_LIST.map(sd => '<option value="' + sd + '"' + (pr.sido === sd ? ' selected' : '') + '>' + sd + '</option>').join('') +
+              '</select>' +
+              '<select class="mini-select" data-region-gugun-id="' + s.id + '" style="max-width:80px;">' +
+                '<option value="">-</option>' +
+                regionGugunOptionsHtml(pr.sido, pr.gugun) +
+              '</select>' +
+            '</div>';
+          })() + '</td>' +
+          '<td><select class="mini-select" data-grade-id="' + s.id + '" style="max-width:64px;">' +
+            '<option value=""' + (s.grade === '' ? ' selected' : '') + '>-</option>' +
+            ['중1','중2','중3','기타'].map(g => '<option value="' + g + '"' + (s.grade === g ? ' selected' : '') + '>' + g + '</option>').join('') +
+          '</select></td>' +
+          '<td><select class="mini-select" data-gender-id="' + s.id + '">' +
+            '<option value=""' + (s.gender === '' ? ' selected' : '') + '>-</option>' +
+            '<option value="남"' + (s.gender === '남' ? ' selected' : '') + '>남</option>' +
+            '<option value="여"' + (s.gender === '여' ? ' selected' : '') + '>여</option>' +
+          '</select></td>' +
+          '<td><div class="companion-cell">' +
+            companionCheckbox(s.id, 'self', '본인', s.companionSelf) +
+            companionCheckbox(s.id, 'mother', '모', s.companionMother) +
+            companionCheckbox(s.id, 'father', '부', s.companionFather) +
+            companionCheckbox(s.id, 'sibling', '형제', s.companionSibling) +
+            companionCheckbox(s.id, 'relative', '친척', s.companionRelative) +
+            companionCheckbox(s.id, 'other', '기타', s.companionOther) +
+          '</div></td>' +
+          '<td>' + (escapeHtml(s.refTeacher) || '-') + '</td>' +
+          '<td><select class="mini-select" data-info-id="' + s.id + '">' +
+            '<option value=""' + (s.infoSource === '' ? ' selected' : '') + '>-</option>' +
+            INFO_SOURCES.map(src => '<option value="' + escapeHtml(src) + '"' + (s.infoSource === src ? ' selected' : '') + '>' + escapeHtml(src) + '</option>').join('') +
+          '</select></td>' +
+          '<td>' + statusBadge(s.status) + '</td>' +
+          '<td class="num">' + (s.ticketNumber ? s.ticketNumber : '-') + '</td>' +
+          '<td><select class="mini-select" data-interest-id="' + s.id + '">' +
+            '<option value=""' + (s.interestedDepartment === '' ? ' selected' : '') + '>미정</option>' +
+            INTEREST_DEPARTMENTS.map(dep => '<option value="' + escapeHtml(dep) + '"' + (s.interestedDepartment === dep ? ' selected' : '') + '>' + escapeHtml(dep) + '</option>').join('') +
+          '</select></td>' +
+          '<td style="text-align:center;"><input type="checkbox" data-wants-id="' + s.id + '"' + (s.wantsConsult ? ' checked' : '') + '></td>' +
+          '<td><select class="mini-select" data-assign-id="' + s.id + '">' +
+            '<option value="">미배정</option>' +
+            state.desks.map(d => '<option value="' + escapeHtml(d.teacher) + '"' + (s.assignedTeacher === d.teacher ? ' selected' : '') + '>' + escapeHtml(d.teacher) + '</option>').join('') +
+          '</select></td>' +
+          '<td>' + (escapeHtml(s.consultTeacher) || '-') + '</td>' +
+          '<td>' + ynMark(s.status === 'done') + '</td>' +
+          '<td class="num">' + (dur !== null ? dur : '-') + '</td>' +
+          '<td>' + (escapeHtml(s.consultType) || '-') + '</td>' +
+          '<td>' + (escapeHtml(s.note) || '-') + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>';
+  }
+}
+
+function renderCheckin(){
+  const issuedWrap = document.getElementById('ticketIssuedWrap');
+  if(issuedTicketStudentId){
+    const s = studentById(issuedTicketStudentId);
+    if(s && s.ticketNumber){
+      issuedWrap.innerHTML =
+        '<div class="ticket-issued">' +
+          '<div class="lbl">대기번호 발급 완료</div>' +
+          '<div class="big num">' + s.ticketNumber + '</div>' +
+          '<div class="name">' + escapeHtml(s.name) + (s.org ? ' · ' + escapeHtml(s.org) : '') + ' 학생, 호명 시까지 잠시 기다려 주세요.</div>' +
+        '</div>';
+    } else { issuedWrap.innerHTML = ''; }
+  } else { issuedWrap.innerHTML = ''; }
+
+  const term = (document.getElementById('checkinSearch').value || '').trim();
+  const list = document.getElementById('checkinList');
+  const candidates = state.students.filter(s => s.status === 'not_arrived').filter(s => !term || s.name.includes(term));
+  if(candidates.length === 0){
+    list.innerHTML = '<p class="empty">' + (term ? '검색 결과가 없습니다.' : '미도착 상태인 학생이 없습니다.') + '</p>';
+  } else {
+    list.innerHTML = candidates.map(s =>
+      '<div class="student-row">' +
+        '<div class="info">' +
+          '<div class="nm">' + escapeHtml(s.name) + '</div>' +
+          '<div class="org">' + (escapeHtml(s.org) || '출신학교 미입력') + (s.phone1 ? ' · ****' + s.phone1.slice(-4) : '') + '</div>' +
+        '</div>' +
+        '<button class="btn btn-amber" data-checkin="' + s.id + '">도착 접수</button>' +
+      '</div>'
+    ).join('');
+  }
+}
+
+function getDepartmentList(){
+  const set = [];
+  state.desks.forEach(d => { if(d.department && set.indexOf(d.department) < 0) set.push(d.department); });
+  return set;
+}
+
+function renderDesks(){
+  const waiting = waitingStudents();
+  document.getElementById('waitingCountTxt').textContent = '대기 ' + waiting.length + '명';
+  const depts = getDepartmentList();
+
+  /* ---- 상담 희망 대기열 · 선생님 배정 (가로 스크롤 없는 카드형) ---- */
+  const queueWrap = document.getElementById('consultQueueWrap');
+  if(waiting.length === 0){
+    queueWrap.innerHTML = '<p class="empty">대기 중인 학생이 없습니다.</p>';
+  } else {
+    queueWrap.innerHTML = waiting.map(s => {
+      const freeDesks = state.desks.filter(d => !d.currentStudentId);
+      let deskOptionsHtml = '<option value="">선생님 선택...</option>';
+      if(depts.length){
+        depts.forEach(dep => {
+          const opts = freeDesks.filter(d => d.department === dep);
+          if(opts.length){
+            deskOptionsHtml += '<optgroup label="' + escapeHtml(dep) + '">' +
+              opts.map(d => '<option value="' + d.id + '">' + escapeHtml(d.teacher) + ' (' + d.position + '번 자리)</option>').join('') +
+            '</optgroup>';
+          }
+        });
+        const noDept = freeDesks.filter(d => !d.department);
+        if(noDept.length){
+          deskOptionsHtml += '<optgroup label="미지정">' +
+            noDept.map(d => '<option value="' + d.id + '">' + escapeHtml(d.teacher) + ' (' + d.position + '번 자리)</option>').join('') +
+          '</optgroup>';
+        }
+      } else {
+        deskOptionsHtml += freeDesks.map(d => '<option value="' + d.id + '">' + escapeHtml(d.teacher) + ' (' + d.position + '번 자리)</option>').join('');
+      }
+      return '<div class="queue-row">' +
+          '<div class="queue-info">' +
+            '<span class="qi-ticket num">' + s.ticketNumber + '번</span>' +
+            '<span class="qi-name">' + escapeHtml(s.name) + '</span>' +
+            '<span class="qi-org">' + (escapeHtml(s.org) || '-') + '</span>' +
+            '<span class="qi-consult">상담희망 ' + ynMark(s.wantsConsult) + '</span>' +
+          '</div>' +
+          '<div class="queue-controls">' +
+            '<select class="mini-select" data-interest-id="' + s.id + '">' +
+              '<option value=""' + (s.interestedDepartment === '' ? ' selected' : '') + '>관심학과: 미정</option>' +
+              INTEREST_DEPARTMENTS.map(dep => '<option value="' + escapeHtml(dep) + '"' + (s.interestedDepartment === dep ? ' selected' : '') + '>' + escapeHtml(dep) + '</option>').join('') +
+            '</select>' +
+            '<select class="assign-select" data-desk-select-id="' + s.id + '">' + deskOptionsHtml + '</select>' +
+            '<button class="btn btn-amber" data-assign-btn="' + s.id + '"' + (freeDesks.length === 0 ? ' disabled' : '') + '>배정</button>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* ---- 학과별 데스크 현황 ---- */
+  const groupsWrap = document.getElementById('deskGroups');
+  if(state.desks.length === 0){
+    groupsWrap.innerHTML = '<p class="empty">등록된 데스크가 없습니다. [명단 관리] 탭에서 데스크를 추가해주세요.</p>';
+  } else {
+    const groupKeys = depts.slice();
+    const hasNoDept = state.desks.some(d => !d.department);
+    if(hasNoDept) groupKeys.push('');
+    groupsWrap.innerHTML = groupKeys.map(dep => {
+      const list = state.desks.filter(d => (d.department || '') === dep);
+      if(list.length === 0) return '';
+      const title = dep ? dep : '미지정';
+      const cards = list.map(d => {
+        const serving = d.currentStudentId ? studentById(d.currentStudentId) : null;
+        return '<div class="desk-card ' + (serving ? 'serving' : '') + '">' +
+            '<div class="desk-head">' +
+              '<span class="dname">' + escapeHtml(d.teacher) + '</span>' +
+              '<span class="didx">' + d.position + '번 자리</span>' +
+            '</div>' +
+            '<div class="desk-current ' + (serving ? '' : 'empty-slot') + '">' +
+              (serving
+                ? '<div class="who num">' + serving.ticketNumber + '번</div><div class="sub">' + escapeHtml(serving.name) + '</div>'
+                : '비어있음 · 위 대기열에서 배정해주세요.') +
+            '</div>' +
+            (serving
+              ? '<div class="btn-row" style="margin-top:0;">' +
+                  '<button class="btn btn-ghost" data-repeat="' + d.id + '">🔁 다시 호출</button>' +
+                  '<button class="btn btn-primary" data-finish="' + d.id + '">상담 완료</button>' +
+                  '<button class="btn btn-danger" data-noshow="' + d.id + '">미응답</button>' +
+                  '<button class="btn btn-ghost" data-cancel-assign="' + d.id + '" title="잘못 배정한 경우 대기열로 되돌립니다">↩️ 배정 취소</button>' +
+                '</div>'
+              : '') +
+          '</div>';
+      }).join('');
+      return '<div class="dept-group">' +
+        '<div class="dept-group-title">' + escapeHtml(title) + ' <span class="count">(' + list.length + '자리)</span></div>' +
+        '<div class="desk-grid">' + cards + '</div>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+function buildCallsHtml(){
+  return state.desks.map((d,i) => {
+    const idx = i + 1;
+    const serving = d.currentStudentId ? studentById(d.currentStudentId) : null;
+    const flashing = d.calledAt && (Date.now() - Date.parse(d.calledAt) < 1600);
+    return '<div class="call-card ' + (flashing ? 'flash' : '') + '">' +
+        '<div class="desklbl">' + idx + '번 자리 · ' + escapeHtml(d.teacher) + '</div>' +
+        (serving ? '<div class="ticket num">' + serving.ticketNumber + '</div>' : '<div class="empty-txt">호출 대기</div>') +
+      '</div>';
+  }).join('') || '<div class="board-empty">등록된 데스크가 없습니다.</div>';
+}
+function buildChipsHtml(){
+  const q = waitingStudents();
+  return q.length ? q.map(s => '<span class="chip num">' + s.ticketNumber + '</span>').join('')
+                  : '<span class="board-empty">대기 중인 학생이 없습니다.</span>';
+}
+function renderBoard(){
+  document.getElementById('boardClock').textContent = new Date().toLocaleTimeString('ko-KR');
+  document.getElementById('boardCalls').innerHTML = buildCallsHtml();
+  document.getElementById('boardWaitChips').innerHTML = buildChipsHtml();
+}
+
+let boardWindow = null;
+function openBoardWindow(){
+  if(boardWindow && !boardWindow.closed){ boardWindow.focus(); return; }
+  boardWindow = window.open('', 'mirimBoardDisplay', 'width=1280,height=800');
+  if(!boardWindow){ alert('팝업이 차단되었습니다. 브라우저 주소창의 팝업 차단 아이콘을 눌러 이 사이트의 팝업을 허용해주세요.'); return; }
+  const doc = boardWindow.document;
+  doc.open();
+  doc.write('<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">' +
+    '<title>전광판 · 미림마이스터고 입학설명회</title>' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">' +
+    '<style>' +
+      ':root{ --amber:#F2A93B; }' +
+      '*{box-sizing:border-box;}' +
+      'html,body{ margin:0; height:100%; background:radial-gradient(circle at top left,#1B2E52,#0E1A30 65%); color:#fff; font-family:\'Noto Sans KR\',-apple-system,\'Malgun Gothic\',sans-serif; }' +
+      '.num{ font-family:\'IBM Plex Mono\', ui-monospace, monospace; font-variant-numeric: tabular-nums; }' +
+      '.wrap{ padding:44px 52px; min-height:100%; }' +
+      '.board-title{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:34px; flex-wrap:wrap; gap:10px;}' +
+      '.board-title .t1{ font-size:20px; letter-spacing:.14em; color:var(--amber); font-weight:700; text-transform:uppercase;}' +
+      '.board-title .t2{ font-size:18px; color:#8FA0C0; }' +
+      '.board-calls{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; margin-bottom:44px;}' +
+      '.call-card{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:16px; padding:30px; text-align:center; }' +
+      '.call-card.flash{ animation:flash 1.4s ease; }' +
+      '@keyframes flash{ 0%{ background:rgba(242,169,59,.35);} 100%{ background:rgba(255,255,255,.04);} }' +
+      '.call-card .desklbl{ font-size:17px; color:#9FB3D6; font-weight:700; letter-spacing:.05em;}' +
+      '.call-card .ticket{ font-size:88px; font-weight:700; color:var(--amber); margin:12px 0 2px; line-height:1;}' +
+      '.call-card .empty-txt{ font-size:18px; color:#5F6E8C; padding:28px 0; }' +
+      '.board-wait-title{ font-size:17px; letter-spacing:.1em; color:#9FB3D6; font-weight:700; text-transform:uppercase; margin-bottom:16px;}' +
+      '.wait-chips{ display:flex; flex-wrap:wrap; gap:12px; }' +
+      '.chip{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); padding:12px 22px; border-radius:10px; font-size:26px; font-weight:700; color:#E7ECF6; }' +
+      '.board-empty{ color:#5F6E8C; font-size:17px; }' +
+      '.hint{ position:fixed; bottom:14px; right:18px; font-size:12px; color:#4C5A78; }' +
+    '</style></head><body><div class="wrap">' +
+      '<div class="board-title"><span class="t1">Now Calling · 지금 호출 중</span><span class="t2" id="boardClockPopup"></span></div>' +
+      '<div class="board-calls" id="boardCallsPopup"></div>' +
+      '<div class="board-wait-title">대기 중 · Waiting</div>' +
+      '<div class="wait-chips" id="boardWaitChipsPopup"></div>' +
+      '<div class="hint">F11 을 눌러 전체화면으로 볼 수 있습니다</div>' +
+    '</div></body></html>');
+  doc.close();
+  renderBoardWindow();
+}
+function renderBoardWindow(){
+  if(!boardWindow || boardWindow.closed) return;
+  const doc = boardWindow.document;
+  const clockEl = doc.getElementById('boardClockPopup');
+  const callsEl = doc.getElementById('boardCallsPopup');
+  const chipsEl = doc.getElementById('boardWaitChipsPopup');
+  if(!clockEl || !callsEl || !chipsEl) return;
+  clockEl.textContent = new Date().toLocaleTimeString('ko-KR');
+  callsEl.innerHTML = buildCallsHtml();
+  chipsEl.innerHTML = buildChipsHtml();
+}
+
+function render(){
+  if(currentTab === 'admin') renderAdmin();
+  if(currentTab === 'checkin') renderCheckin();
+  if(currentTab === 'desks') renderDesks();
+  if(currentTab === 'board') renderBoard();
+  if(currentTab === 'records') renderRecords();
+  if(currentTab === 'report') renderReport();
+  renderBoardWindow();
+}
+
+
+/* ================= RECORDS (회차 기록) ================= */
+let recordsData = null;      // students_archive 캐시
+let recordsError = null;
+let recordsSelectedRound = null;
+
+const REC_STATUS = {
+  done:        { label: '상담완료', cls: 'yn-yes' },
+  no_show:     { label: '미응답',   cls: 'yn-no' },
+  in_progress: { label: '상담중',   cls: '' },
+  waiting:     { label: '대기',     cls: '' },
+  not_arrived: { label: '미참석',   cls: 'yn-no' }
+};
+function recStatusLabel(s){
+  const m = REC_STATUS[s]; return m ? m.label : (s || '-');
+}
+
+async function loadRecords(){
+  recordsError = null;
+  try{
+    const rows = await sbSelect('students_archive',
+      'select=round_no,label,archived_at,student&order=round_no.asc,archive_id.asc');
+    recordsData = rows || [];
+    const rounds = recordsData.map(r => r.round_no);
+    if(rounds.length && (recordsSelectedRound === null || rounds.indexOf(recordsSelectedRound) < 0)){
+      recordsSelectedRound = Math.max.apply(null, rounds);
+    }
+  }catch(e){
+    recordsError = e.message || String(e);
+    recordsData = [];
+  }
+  renderRecords();
+}
+
+function renderRecords(){
+  const sum = document.getElementById('recordsSummary');
+  const btns = document.getElementById('recordsRoundBtns');
+  const wrap = document.getElementById('recordsDetailWrap');
+  if(!sum) return;
+
+  if(recordsError){
+    sum.innerHTML = '<p class="empty">보관함을 불러오지 못했습니다.<br>' +
+      'Supabase SQL Editor에서 회차 보관용 SQL(students_archive 테이블 + reset_all 함수)을 먼저 실행해 주세요.<br>' +
+      '<span style="color:var(--ink-soft);font-size:12px;">' + escapeHtml(recordsError) + '</span></p>';
+    if(btns) btns.innerHTML = '';
+    if(wrap) wrap.innerHTML = '';
+    return;
+  }
+  if(recordsData === null){
+    sum.innerHTML = '<p class="empty">불러오는 중...</p>';
+    return;
+  }
+  if(recordsData.length === 0){
+    sum.innerHTML = '<p class="empty">아직 보관된 회차가 없습니다. 한 회차를 마친 뒤 [명단 관리] 탭의 [전체 초기화]를 누르면 그 회차가 여기에 저장됩니다.</p>';
+    if(btns) btns.innerHTML = '';
+    if(wrap) wrap.innerHTML = '';
+    return;
+  }
+
+  /* 회차별 그룹 집계 */
+  const groups = {};
+  recordsData.forEach(r => {
+    const st = r.student || {};
+    if(!groups[r.round_no]) groups[r.round_no] = { round: r.round_no, label: r.label, list: [] };
+    groups[r.round_no].list.push(st);
+  });
+  const rounds = Object.keys(groups).map(Number).sort((a,b) => a - b);
+
+  /* 요약 표 */
+  sum.innerHTML =
+    '<table><thead><tr>' +
+      '<th>회차</th><th>날짜</th><th>신청인원</th><th>참석</th><th>상담완료</th><th>미응답</th><th>관리</th>' +
+    '</tr></thead><tbody>' +
+    rounds.map(rn => {
+      const g = groups[rn];
+      const total = g.list.length;
+      const arrived = g.list.filter(s => s.status && s.status !== 'not_arrived').length;
+      const done = g.list.filter(s => s.status === 'done').length;
+      const noshow = g.list.filter(s => s.status === 'no_show').length;
+      return '<tr>' +
+        '<td class="num">' + rn + '회차</td>' +
+        '<td>' + escapeHtml(g.label || '-') + '</td>' +
+        '<td class="num">' + total + '</td>' +
+        '<td class="num">' + arrived + '</td>' +
+        '<td class="num">' + done + '</td>' +
+        '<td class="num">' + noshow + '</td>' +
+        '<td><button class="btn btn-danger btn-del-round" data-delround="' + rn + '" style="padding:4px 12px;font-size:13px;">삭제</button></td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table>';
+
+  /* 회차 삭제 버튼 연결 */
+  sum.querySelectorAll('button[data-delround]').forEach(b => {
+    b.addEventListener('click', () => deleteRound(Number(b.dataset.delround)));
+  });
+
+  /* 회차 선택 버튼 */
+  if(recordsSelectedRound === null || rounds.indexOf(recordsSelectedRound) < 0){
+    recordsSelectedRound = rounds[rounds.length - 1];
+  }
+  btns.innerHTML = rounds.map(rn =>
+    '<button class="btn ' + (rn === recordsSelectedRound ? 'btn-primary' : '') +
+    '" data-round="' + rn + '" style="margin-right:6px;">' + rn + '회차</button>'
+  ).join('');
+  btns.querySelectorAll('button[data-round]').forEach(b => {
+    b.addEventListener('click', () => {
+      recordsSelectedRound = Number(b.dataset.round);
+      renderRecords();
+    });
+  });
+
+  /* 선택 회차 상세 명단 */
+  const g = groups[recordsSelectedRound];
+  document.getElementById('recordsDetailTitle').textContent = recordsSelectedRound + '회차 명단 (' + (g.label || '') + ')';
+  const list = g.list.slice().sort((a,b) => {
+    const ta = a.ticket_number == null ? 9999 : Number(a.ticket_number);
+    const tb = b.ticket_number == null ? 9999 : Number(b.ticket_number);
+    return ta - tb;
+  });
+  wrap.innerHTML =
+    '<table><thead><tr>' +
+      '<th>번호표</th><th>성명</th><th>출신학교</th><th>지역</th><th>연락처</th>' +
+      '<th>상담희망</th><th>관심학과</th><th>상담교사</th><th>상담구분</th><th>상태</th><th>비고</th>' +
+    '</tr></thead><tbody>' +
+    list.map(s => {
+      const stMeta = REC_STATUS[s.status] || { label: s.status || '-', cls: '' };
+      return '<tr>' +
+        '<td class="num">' + (s.ticket_number != null ? s.ticket_number : '-') + '</td>' +
+        '<td>' + escapeHtml(s.name || '') + '</td>' +
+        '<td>' + (escapeHtml(s.org || '') || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.region || '') || '-') + '</td>' +
+        '<td class="num">' + (escapeHtml(s.phone1 || '') || '-') + '</td>' +
+        '<td>' + (s.wants_consult ? '<span class="yn-yes">✓</span>' : '<span class="yn-no">-</span>') + '</td>' +
+        '<td>' + (escapeHtml(s.interested_department || '') || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.consult_teacher || '') || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.consult_type || '') || '-') + '</td>' +
+        '<td><span class="' + stMeta.cls + '">' + escapeHtml(stMeta.label) + '</span></td>' +
+        '<td>' + (escapeHtml(s.note || '') || '-') + '</td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table>';
+}
+
+document.getElementById('btnReloadRecords').addEventListener('click', loadRecords);
+
+/* ================= REPORT (결과보고서) ================= */
+let reportArchiveRows = null; // raw students_archive rows
+
+async function loadReportRounds(){
+  try {
+    reportArchiveRows = await sbSelect('students_archive', 'select=round_no,label,archived_at,student&order=round_no.asc,archive_id.asc');
+  } catch(e){ reportArchiveRows = []; }
+  populateReportRoundOptions();
+  renderReport();
+}
+
+function populateReportRoundOptions(){
+  const sel = document.getElementById('reportRoundSelect');
+  if(!sel) return;
+  const prev = sel.value;
+  const rounds = [];
+  (reportArchiveRows || []).forEach(r => { if(rounds.indexOf(r.round_no) < 0) rounds.push(r.round_no); });
+  rounds.sort((a,b) => b - a);
+  let html = '<option value="live">현재 진행중 (미마감)</option>';
+  rounds.forEach(rn => {
+    const sample = reportArchiveRows.find(r => r.round_no === rn);
+    const dateLabel = sample && sample.label ? sample.label : '';
+    const text = rn + '회차' + (dateLabel ? ' · ' + dateLabel : '');
+    html += '<option value="' + rn + '">' + escapeHtml(text) + '</option>';
+  });
+  sel.innerHTML = html;
+  if(prev && Array.from(sel.options).some(o => o.value === prev)) sel.value = prev;
+}
+
+function getReportStudents(){
+  const sel = document.getElementById('reportRoundSelect');
+  const val = sel ? sel.value : 'live';
+  if(!val || val === 'live'){ return state.students; }
+  const rn = Number(val);
+  return (reportArchiveRows || []).filter(r => r.round_no === rn).map(r => mapStudent(r.student || {}));
+}
+
+function getReportLabel(){
+  const sel = document.getElementById('reportRoundSelect');
+  const val = sel ? sel.value : 'live';
+  if(!val || val === 'live') return '현재 진행중';
+  const opt = sel.options[sel.selectedIndex];
+  return opt ? opt.textContent : (val + '회차');
+}
+
+function computeReportStats(students){
+  const total = students.length;
+  const arrived = students.filter(s => s.status !== 'not_arrived').length;
+  const rate = total > 0 ? Math.round((arrived / total) * 1000) / 10 : 0;
+  const wantConsult = students.filter(s => s.wantsConsult).length;
+  const consultDone = students.filter(s => s.status === 'done').length;
+
+  const withDuration = students
+    .filter(s => s.consultStartedAt && s.consultCompletedAt)
+    .map(s => ({ teacher: s.consultTeacher || '(미상)', minutes: (Date.parse(s.consultCompletedAt) - Date.parse(s.consultStartedAt)) / 60000 }))
+    .filter(x => x.minutes >= 0);
+
+  const avgMinutes = withDuration.length
+    ? Math.round((withDuration.reduce((a,b) => a + b.minutes, 0) / withDuration.length) * 10) / 10
+    : null;
+
+  const byTeacher = {};
+  withDuration.forEach(x => { (byTeacher[x.teacher] = byTeacher[x.teacher] || []).push(x.minutes); });
+  const perTeacher = Object.keys(byTeacher).sort().map(teacher => {
+    const arr = byTeacher[teacher];
+    const avg = Math.round((arr.reduce((a,b) => a+b, 0) / arr.length) * 10) / 10;
+    const max = Math.round(Math.max.apply(null, arr) * 10) / 10;
+    const min = Math.round(Math.min.apply(null, arr) * 10) / 10;
+    return { teacher: teacher, count: arr.length, avg: avg, max: max, min: min };
+  });
+
+  const male = students.filter(s => s.gender === '남').length;
+  const female = students.filter(s => s.gender === '여').length;
+  const genderUnknown = total - male - female;
+
+  const companionCounts = {
+    self: students.filter(s => s.companionSelf).length,
+    mother: students.filter(s => s.companionMother).length,
+    father: students.filter(s => s.companionFather).length,
+    sibling: students.filter(s => s.companionSibling).length,
+    relative: students.filter(s => s.companionRelative).length,
+    other: students.filter(s => s.companionOther).length
+  };
+
+  function countBy(getter){
+    const map = {};
+    students.forEach(s => { const k = getter(s) || '미기재'; map[k] = (map[k] || 0) + 1; });
+    return Object.keys(map).map(k => ({ label: k, count: map[k] })).sort((a,b) => b.count - a.count);
+  }
+  const infoList = countBy(s => s.infoSource);
+  const typeList = countBy(s => s.consultType);
+  const regionList = countBy(s => s.region);
+  const interestList = countBy(s => s.interestedDepartment);
+
+  return { total: total, arrived: arrived, rate: rate, wantConsult: wantConsult, consultDone: consultDone,
+    avgMinutes: avgMinutes, perTeacher: perTeacher, male: male, female: female, genderUnknown: genderUnknown,
+    companionCounts: companionCounts, infoList: infoList, typeList: typeList, regionList: regionList, interestList: interestList };
+}
+
+function reportStatRow(items){
+  return '<div class="stat-grid">' + items.map(it =>
+    '<div class="stat-box"><div class="hd ' + it[2] + '">' + it[0] + '</div><div class="bd num">' + it[1] + '</div></div>'
+  ).join('') + '</div>';
+}
+
+function simpleCountTable(title, list, labelHeader){
+  if(!list.length) return '<div class="panel"><h2 class="section-title">' + title + '</h2><p class="empty">데이터가 없습니다.</p></div>';
+  return '<div class="panel"><h2 class="section-title">' + title + '</h2>' +
+    '<div class="table-scroll"><table><thead><tr><th>' + labelHeader + '</th><th>인원</th></tr></thead><tbody>' +
+    list.map(it => '<tr><td>' + escapeHtml(it.label) + '</td><td class="num">' + it.count + '명</td></tr>').join('') +
+    '</tbody></table></div></div>';
+}
+
+function renderReport(){
+  const container = document.getElementById('reportContent');
+  if(!container) return;
+  const students = getReportStudents();
+  const st = computeReportStats(students);
+  const label = getReportLabel();
+  const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+
+  let html = '';
+
+  html += '<div class="panel" style="text-align:center;">' +
+    '<h2 style="margin:0 0 4px; font-size:19px; font-weight:900;">미림마이스터고 ' + escapeHtml(label) + ' 입학설명회 결과보고서</h2>' +
+    '<p class="section-sub" style="margin:0;">작성일: ' + today + '</p>' +
+  '</div>';
+
+  html += '<div class="panel"><h2 class="section-title">종합 통계</h2>' +
+    reportStatRow([
+      ['신청인원', st.total + '명', 'hd-steel'],
+      ['참석인원', st.arrived + '명', 'hd-mint'],
+      ['참석률', st.rate + '%', 'hd-purple'],
+      ['상담희망', st.wantConsult + '명', 'hd-amber'],
+      ['상담완료', st.consultDone + '명', 'hd-purple'],
+      ['평균상담시간', (st.avgMinutes !== null ? st.avgMinutes : 0) + '분', 'hd-gray']
+    ]) +
+  '</div>';
+
+  html += '<div class="panel"><h2 class="section-title">상담교사별 상담 현황</h2>' +
+    '<div class="table-scroll"><table><thead><tr><th>상담교사</th><th>상담건수</th><th>평균시간(분)</th><th>최장시간(분)</th><th>최단시간(분)</th></tr></thead><tbody>' +
+    (st.perTeacher.length
+      ? st.perTeacher.map(t => '<tr><td>' + escapeHtml(t.teacher) + '</td><td class="num">' + t.count + '건</td><td class="num">' + t.avg + '분</td><td class="num">' + t.max + '분</td><td class="num">' + t.min + '분</td></tr>').join('')
+      : '<tr><td colspan="5" class="empty">완료된 상담 기록이 없습니다.</td></tr>') +
+    '<tr style="font-weight:900; background:#F8FAFC;"><td>합계</td><td class="num">' + st.consultDone + '건</td><td class="num">' + (st.avgMinutes !== null ? st.avgMinutes : '-') + '분 (전체평균)</td><td colspan="2"></td></tr>' +
+    '</tbody></table></div>' +
+  '</div>';
+
+  html += '<div class="panel"><h2 class="section-title">학생 성별 현황</h2>' +
+    reportStatRow([
+      ['남학생', st.male + '명', 'hd-steel'],
+      ['여학생', st.female + '명', 'hd-red'],
+      ['미기재', st.genderUnknown + '명', 'hd-gray']
+    ]) +
+  '</div>';
+
+  html += '<div class="panel"><h2 class="section-title">동반자 현황</h2>' +
+    reportStatRow([
+      ['학생본인', st.companionCounts.self + '명', 'hd-steel'],
+      ['어머니', st.companionCounts.mother + '명', 'hd-mint'],
+      ['아버지', st.companionCounts.father + '명', 'hd-steel'],
+      ['형제자매', st.companionCounts.sibling + '명', 'hd-amber'],
+      ['친인척', st.companionCounts.relative + '명', 'hd-purple'],
+      ['기타', st.companionCounts.other + '명', 'hd-gray']
+    ]) +
+  '</div>';
+
+  html += simpleCountTable('관심학과별 현황', st.interestList, '관심학과');
+  html += simpleCountTable('정보 취득 경로', st.infoList, '경로');
+  html += simpleCountTable('상담구분별 현황', st.typeList, '상담구분');
+  html += simpleCountTable('지역별 참석 현황', st.regionList, '지역');
+
+  const sorted = students.slice().sort((a,b) => {
+    const ta = a.ticketNumber == null ? 9999 : a.ticketNumber;
+    const tb = b.ticketNumber == null ? 9999 : b.ticketNumber;
+    return ta - tb;
+  });
+  html += '<div class="panel"><h2 class="section-title">참석자 상세 명단 (총 ' + students.length + '명)</h2>' +
+    '<div class="table-scroll"><table><thead><tr>' +
+      '<th>번호표</th><th>성명</th><th>연락처1</th><th>출신학교</th><th>지역</th><th>학년</th><th>성별</th>' +
+      '<th>참석여부</th><th>상담희망</th><th>관심학과</th><th>상담교사</th><th>상담구분</th><th>정보취득경로</th><th>비고</th>' +
+    '</tr></thead><tbody>' +
+    sorted.map(s =>
+      '<tr>' +
+        '<td class="num">' + (s.ticketNumber != null ? s.ticketNumber : '-') + '</td>' +
+        '<td>' + escapeHtml(s.name) + '</td>' +
+        '<td class="num">' + (escapeHtml(s.phone1) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.org) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.region) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.grade) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.gender) || '-') + '</td>' +
+        '<td>' + statusBadge(s.status) + '</td>' +
+        '<td>' + ynMark(s.wantsConsult) + '</td>' +
+        '<td>' + (escapeHtml(s.interestedDepartment) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.consultTeacher) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.consultType) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.infoSource) || '-') + '</td>' +
+        '<td>' + (escapeHtml(s.note) || '-') + '</td>' +
+      '</tr>'
+    ).join('') +
+    '</tbody></table></div>' +
+  '</div>';
+
+  container.innerHTML = html;
+}
+
+document.getElementById('reportRoundSelect').addEventListener('change', renderReport);
+document.getElementById('btnPrintReport').addEventListener('click', () => window.print());
+document.getElementById('btnDeleteReportRound').addEventListener('click', () => {
+  const sel = document.getElementById('reportRoundSelect');
+  const val = sel ? sel.value : 'live';
+  if(!val || val === 'live'){
+    alert('현재 진행중인 데이터는 여기서 삭제할 수 없습니다. 회차를 완전히 마감하려면 [명단 관리]의 [전체 초기화]를 이용해주세요.');
+    return;
+  }
+  deleteRound(Number(val));
+});
+
+/* ================= EVENTS ================= */
+document.querySelectorAll('nav.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+document.getElementById('btnOpenBoardWindow').addEventListener('click', openBoardWindow);
+document.getElementById('btnOpenBoardWindow2').addEventListener('click', openBoardWindow);
+
+document.getElementById('btnBulkAdd').addEventListener('click', () => {
+  const ta = document.getElementById('bulkInput');
+  bulkAddStudents(ta.value);
+  ta.value = '';
+});
+document.getElementById('btnSample').addEventListener('click', () => {
+  document.getElementById('bulkInput').value =
+    '김민준,서울광남중학교,[PHONE_NUMBER]\n이서연,인천계산중학교,[PHONE_NUMBER]\n박도윤,고양오마중학교,[PHONE_NUMBER]\n최지우,서울신도림중학교,[PHONE_NUMBER]';
+});
+document.getElementById('btnAddDesk').addEventListener('click', addDesk);
+document.getElementById('btnResetAll').addEventListener('click', resetAll);
+document.getElementById('adminTableWrap').addEventListener('change', async (e) => {
+  const g = e.target.closest('[data-gender-id]');
+  const a = e.target.closest('[data-assign-id]');
+  const info = e.target.closest('[data-info-id]');
+  const comp = e.target.closest('[data-companion-id]');
+  const wants = e.target.closest('[data-wants-id]');
+  const regionSido = e.target.closest('[data-region-sido-id]');
+  const regionGugun = e.target.closest('[data-region-gugun-id]');
+  const grade = e.target.closest('[data-grade-id]');
+  const interest = e.target.closest('[data-interest-id]');
+  try {
+    if(g){ await sbUpdate('students', 'id=eq.' + g.dataset.genderId, { gender: e.target.value }); await fetchState(); }
+    if(a){ await sbUpdate('students', 'id=eq.' + a.dataset.assignId, { assigned_teacher: e.target.value }); await fetchState(); }
+    if(info){ await sbUpdate('students', 'id=eq.' + info.dataset.infoId, { info_source: e.target.value }); await fetchState(); }
+    if(wants){ await sbUpdate('students', 'id=eq.' + wants.dataset.wantsId, { wants_consult: e.target.checked }); await fetchState(); }
+    if(regionSido){
+      await sbUpdate('students', 'id=eq.' + regionSido.dataset.regionSidoId, { region: e.target.value });
+      await fetchState();
+    }
+    if(regionGugun){
+      const row = regionGugun.closest('tr');
+      const sidoSel = row ? row.querySelector('[data-region-sido-id]') : null;
+      const combined = [sidoSel ? sidoSel.value : '', e.target.value].filter(Boolean).join(' ');
+      await sbUpdate('students', 'id=eq.' + regionGugun.dataset.regionGugunId, { region: combined });
+      await fetchState();
+    }
+    if(grade){ await sbUpdate('students', 'id=eq.' + grade.dataset.gradeId, { grade: e.target.value.trim() }); await fetchState(); }
+    if(interest){ await sbUpdate('students', 'id=eq.' + interest.dataset.interestId, { interested_department: e.target.value }); await fetchState(); }
+    if(comp){
+      const fieldMeta = COMPANION_FIELDS.find(f => f.field === comp.dataset.companionField);
+      if(fieldMeta){
+        const payload = {};
+        payload[fieldMeta.col] = e.target.checked;
+        await sbUpdate('students', 'id=eq.' + comp.dataset.companionId, payload);
+        await fetchState();
+      }
+    }
+  } catch(err){ alert('저장 중 오류: ' + err.message); }
+});
+document.getElementById('btnDownloadTemplate').addEventListener('click', downloadExcelTemplate);
+document.getElementById('excelFile').addEventListener('change', (e) => {
+  if(e.target.files && e.target.files[0]) handleExcelFile(e.target.files[0]);
+});
+
+document.getElementById('deskEditList').addEventListener('input', (e) => {
+  if(e.target.classList.contains('desk-name-input')){ renameDesk(Number(e.target.dataset.deskId), e.target.value); }
+  if(e.target.classList.contains('desk-dept-input')){ renameDeskDept(Number(e.target.dataset.deskDeptId), e.target.value); }
+});
+document.getElementById('deskEditList').addEventListener('click', (e) => {
+  const rm = e.target.closest('[data-remove-desk]');
+  if(rm) removeDesk(Number(rm.dataset.removeDesk));
+});
+
+document.getElementById('checkinSearch').addEventListener('input', renderCheckin);
+document.getElementById('checkinList').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-checkin]');
+  if(btn) checkInStudent(Number(btn.dataset.checkin));
+});
+document.getElementById('btnWalkin').addEventListener('click', () => {
+  const nameEl = document.getElementById('walkinName');
+  const orgEl = document.getElementById('walkinOrg');
+  const name = nameEl.value.trim();
+  if(!name){ alert('이름을 입력해주세요.'); return; }
+  walkinCheckIn(name, orgEl.value.trim());
+  nameEl.value = ''; orgEl.value = '';
+});
+
+document.getElementById('consultQueueWrap').addEventListener('change', async (e) => {
+  const interest = e.target.closest('[data-interest-id]');
+  if(interest){
+    try { await sbUpdate('students', 'id=eq.' + interest.dataset.interestId, { interested_department: e.target.value }); await fetchState(); }
+    catch(err){ alert('저장 중 오류: ' + err.message); }
+  }
+});
+document.getElementById('consultQueueWrap').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-assign-btn]');
+  if(!btn) return;
+  const studentId = Number(btn.dataset.assignBtn);
+  const row = btn.closest('.queue-row');
+  const sel = row ? row.querySelector('[data-desk-select-id]') : null;
+  const deskId = sel ? Number(sel.value) : 0;
+  if(!deskId){ alert('배정할 선생님을 먼저 선택해주세요.'); return; }
+  assignStudentToDesk(studentId, deskId);
+});
+document.getElementById('deskGroups').addEventListener('click', (e) => {
+  const repeat = e.target.closest('[data-repeat]');
+  const finish = e.target.closest('[data-finish]');
+  const noshow = e.target.closest('[data-noshow]');
+  const cancelAssign = e.target.closest('[data-cancel-assign]');
+  ensureAudioCtx();
+  if(repeat) repeatCall(Number(repeat.dataset.repeat));
+  if(finish) finishConsult(Number(finish.dataset.finish));
+  if(noshow) markNoShow(Number(noshow.dataset.noshow));
+  if(cancelAssign) cancelAssignment(Number(cancelAssign.dataset.cancelAssign));
+});
+
+/* Kiosk events */
+document.getElementById('kioskKeypad').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if(!b) return;
+  const k = b.dataset.k;
+  ensureAudioCtx();
+  if(k === 'back'){ kioskDigits = kioskDigits.slice(0, -1); renderKioskPhone(); }
+  else if(k === 'submit'){ kioskSubmit(); }
+  else if(/^[0-9]$/.test(k)){ if(kioskDigits.length < 4){ kioskDigits += k; renderKioskPhone(); } }
+});
+document.getElementById('btnKioskSubmit').addEventListener('click', kioskSubmit);
+document.getElementById('btnKioskGoWalkin').addEventListener('click', () => {
+  const name = (document.getElementById('kioskName').value || '').trim();
+  startKioskWalkin(name);
+});
+
+document.getElementById('kioskWalkinCard').addEventListener('click', (e) => {
+  ensureAudioCtx();
+  const proceed = e.target.closest('#btnWalkinProceed');
+  const cancel = e.target.closest('#btnWalkinCancel');
+  const next = e.target.closest('#btnWalkinNext');
+  const back = e.target.closest('#btnWalkinBack');
+  const submit = e.target.closest('#btnWalkinSubmit');
+  const genderBtn = e.target.closest('[data-gender]');
+  const consultBtn = e.target.closest('[data-consult]');
+
+  if(proceed){ kioskWalkinStep = 'step1'; renderKioskWalkin(); }
+  if(cancel){ kioskWalkinStep = null; kioskShowLookup(); kioskReset(); }
+  if(back){ kioskWalkinStep = 'step1'; renderKioskWalkin(); }
+  if(genderBtn){ kioskWalkinData.gender = genderBtn.dataset.gender; renderKioskWalkin(); }
+  if(consultBtn){ kioskWalkinData.wantsConsult = (consultBtn.dataset.consult === 'true'); renderKioskWalkin(); }
+  if(next){
+    kioskWalkinData.name = (document.getElementById('wkName').value || '').trim();
+    kioskWalkinData.phone = (document.getElementById('wkPhone').value || '').trim();
+    kioskWalkinData.org = (document.getElementById('wkOrg').value || '').trim();
+    kioskWalkinData.region = (document.getElementById('wkRegion').value || '').trim();
+    kioskWalkinData.grade = document.getElementById('wkGrade').value;
+    if(!kioskWalkinData.name){ alert('이름을 입력해주세요.'); return; }
+    kioskWalkinStep = 'step2';
+    renderKioskWalkin();
+  }
+  if(submit){ kioskWalkinSubmit(); }
+});
+document.getElementById('kioskWalkinCard').addEventListener('change', (e) => {
+  const comp = e.target.closest('[data-comp]');
+  if(comp){ kioskWalkinData[comp.dataset.comp] = e.target.checked; }
+  const info = e.target.closest('#wkInfoSource');
+  if(info){ kioskWalkinData.infoSource = e.target.value; }
+});
+
+/* board auto-refresh (clock + flash expiry) */
+setInterval(() => {
+  if(currentTab === 'board') renderBoard();
+  renderBoardWindow();
+}, 1000);
+
+/* realtime polling from Supabase */
+setInterval(fetchState, 2500);
+
+/* initial load */
+renderKioskPhone();
+fetchState();
+</script>
+
+<div class="modal-overlay" id="studentModal">
+  <div class="modal-card">
+    <h2 id="modalStudentName">학생 정보 편집</h2>
+    <p class="modal-sub">여기서 저장하면 [명단 관리] 표와 [결과보고서]에 바로 반영돼요.</p>
+
+    <div class="modal-grid2">
+      <div class="modal-field">
+        <label>지역</label>
+        <div style="display:flex; gap:8px;">
+          <select id="modalRegionSido" style="flex:1;"></select>
+          <select id="modalRegionGugun" style="flex:1;"></select>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>학년</label>
+        <select id="modalGrade">
+          <option value="">- 선택 안함 -</option>
+          <option value="중1">중1</option>
+          <option value="중2">중2</option>
+          <option value="중3">중3</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-grid2">
+      <div class="modal-field">
+        <label>성별</label>
+        <div class="modal-radio-row">
+          <label><input type="radio" name="modalGender" value=""> 미기재</label>
+          <label><input type="radio" name="modalGender" value="남"> 남</label>
+          <label><input type="radio" name="modalGender" value="여"> 여</label>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label>관심학과</label>
+        <select id="modalInterestDept">
+          <option value="">미정</option>
+          <option value="디자인과">디자인과</option>
+          <option value="소프트웨어과">소프트웨어과</option>
+          <option value="모두 희망">모두 희망</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label>동반자 (해당하는 항목 모두 선택)</label>
+      <div class="modal-check-row">
+        <label><input type="checkbox" id="modalCompSelf"> 학생본인</label>
+        <label><input type="checkbox" id="modalCompMother"> 어머니</label>
+        <label><input type="checkbox" id="modalCompFather"> 아버지</label>
+        <label><input type="checkbox" id="modalCompSibling"> 형제자매</label>
+        <label><input type="checkbox" id="modalCompRelative"> 친인척</label>
+        <label><input type="checkbox" id="modalCompOther"> 기타</label>
+      </div>
+    </div>
+
+    <div class="modal-grid2">
+      <div class="modal-field">
+        <label>정보 취득 경로</label>
+        <select id="modalInfoSource"></select>
+      </div>
+
+      <div class="modal-field">
+        <label>배정 선생님</label>
+        <select id="modalAssignedTeacher"></select>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <div class="modal-check-row">
+        <label><input type="checkbox" id="modalWantsConsult"> 상담 희망</label>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label>상담구분</label>
+      <input type="text" id="modalConsultType" placeholder="예: SW상담, DE상담, SW+DE 등">
+    </div>
+
+    <div class="modal-field">
+      <label>비고</label>
+      <textarea id="modalNote" placeholder="특이사항을 자유롭게 입력하세요"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btnModalCancel">취소</button>
+      <button class="btn btn-primary" id="btnModalSave">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function fillSelectOptions(selectEl, options, blankLabel){
+  selectEl.innerHTML = '<option value="">' + blankLabel + '</option>' +
+    options.map(o => '<option value="' + escapeHtml(o) + '">' + escapeHtml(o) + '</option>').join('');
+}
+
+function openStudentEditor(id){
+  const s = studentById(id);
+  if(!s) return;
+
+  document.getElementById('modalStudentName').textContent = s.name + ' 학생 정보 편집' + (s.ticketNumber ? ' (번호표 ' + s.ticketNumber + '번)' : '');
+
+  const pr = parseRegion(s.region);
+  const sidoSel = document.getElementById('modalRegionSido');
+  const gugunSel = document.getElementById('modalRegionGugun');
+  sidoSel.innerHTML = '<option value="">시/도 선택</option>' + REGION_SIDO_LIST.map(sd => '<option value="' + sd + '">' + sd + '</option>').join('');
+  sidoSel.value = pr.sido;
+  gugunSel.innerHTML = '<option value="">구/군 선택</option>' + regionGugunOptionsHtml(pr.sido, pr.gugun);
+  document.getElementById('modalGrade').value = s.grade || '';
+
+  document.querySelectorAll('input[name="modalGender"]').forEach(r => { r.checked = (r.value === (s.gender || '')); });
+  document.getElementById('modalCompSelf').checked = !!s.companionSelf;
+  document.getElementById('modalCompMother').checked = !!s.companionMother;
+  document.getElementById('modalCompFather').checked = !!s.companionFather;
+  document.getElementById('modalCompSibling').checked = !!s.companionSibling;
+  document.getElementById('modalCompRelative').checked = !!s.companionRelative;
+  document.getElementById('modalCompOther').checked = !!s.companionOther;
+
+  fillSelectOptions(document.getElementById('modalInfoSource'), INFO_SOURCES, '- 선택 안함 -');
+  document.getElementById('modalInfoSource').value = s.infoSource || '';
+
+  document.getElementById('modalInterestDept').value = s.interestedDepartment || '';
+
+  document.getElementById('modalWantsConsult').checked = !!s.wantsConsult;
+
+  fillSelectOptions(document.getElementById('modalAssignedTeacher'), state.desks.map(d => d.teacher), '미배정');
+  document.getElementById('modalAssignedTeacher').value = s.assignedTeacher || '';
+
+  document.getElementById('modalConsultType').value = s.consultType || '';
+  document.getElementById('modalNote').value = s.note || '';
+
+  document.getElementById('studentModal').dataset.studentId = id;
+  document.getElementById('studentModal').classList.add('show');
+}
+
+function closeStudentEditor(){
+  document.getElementById('studentModal').classList.remove('show');
+}
+
+async function saveStudentEditor(){
+  const modal = document.getElementById('studentModal');
+  const id = modal.dataset.studentId;
+  if(!id) return;
+
+  const genderEl = document.querySelector('input[name="modalGender"]:checked');
+
+  const payload = {
+    region: [document.getElementById('modalRegionSido').value, document.getElementById('modalRegionGugun').value].filter(Boolean).join(' '),
+    grade: document.getElementById('modalGrade').value.trim(),
+    gender: genderEl ? genderEl.value : '',
+    companion_self: document.getElementById('modalCompSelf').checked,
+    companion_mother: document.getElementById('modalCompMother').checked,
+    companion_father: document.getElementById('modalCompFather').checked,
+    companion_sibling: document.getElementById('modalCompSibling').checked,
+    companion_relative: document.getElementById('modalCompRelative').checked,
+    companion_other: document.getElementById('modalCompOther').checked,
+    info_source: document.getElementById('modalInfoSource').value,
+    interested_department: document.getElementById('modalInterestDept').value,
+    wants_consult: document.getElementById('modalWantsConsult').checked,
+    assigned_teacher: document.getElementById('modalAssignedTeacher').value,
+    consult_type: document.getElementById('modalConsultType').value.trim(),
+    note: document.getElementById('modalNote').value.trim()
+  };
+
+  const btn = document.getElementById('btnModalSave');
+  btn.disabled = true; btn.textContent = '저장 중...';
+  try {
+    await sbUpdate('students', 'id=eq.' + id, payload);
+    await fetchState();
+    closeStudentEditor();
+  } catch(e){
+    alert('저장 중 오류: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '저장';
+  }
+}
+
+document.getElementById('adminTableWrap').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-edit-student]');
+  if(btn) openStudentEditor(Number(btn.dataset.editStudent));
+});
+document.getElementById('btnModalCancel').addEventListener('click', closeStudentEditor);
+document.getElementById('btnModalSave').addEventListener('click', saveStudentEditor);
+document.getElementById('modalRegionSido').addEventListener('change', (e) => {
+  const gugunSel = document.getElementById('modalRegionGugun');
+  gugunSel.innerHTML = '<option value="">구/군 선택</option>' + regionGugunOptionsHtml(e.target.value, '');
+});
+document.getElementById('studentModal').addEventListener('click', (e) => {
+  if(e.target.id === 'studentModal') closeStudentEditor();
+});
+</script>
+</body>
+</html>
