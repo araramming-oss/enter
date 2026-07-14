@@ -179,13 +179,14 @@
   .board-calls{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:26px;}
   .call-card{
     background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:12px;
-    padding:18px; text-align:center;
+    padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; text-align:left;
   }
   .call-card.flash{ animation:flash 1.4s ease; }
   @keyframes flash{ 0%{ background:rgba(242,169,59,.35);} 100%{ background:rgba(255,255,255,.04);} }
-  .call-card .desklbl{ font-size:12px; color:#9FB3D6; font-weight:700; letter-spacing:.05em;}
-  .call-card .ticket{ font-size:46px; font-weight:700; color:var(--amber); margin:6px 0 2px; }
-  .call-card .empty-txt{ font-size:13px; color:#5F6E8C; padding:16px 0; }
+  .call-card .desklbl{ font-size:13px; color:#9FB3D6; font-weight:700; letter-spacing:.03em; line-height:1.4; flex:1; min-width:0;}
+  .call-card .divider{ width:1px; align-self:stretch; background:rgba(255,255,255,.15); flex-shrink:0; }
+  .call-card .ticket{ font-size:58px; font-weight:700; color:var(--amber); line-height:1; flex-shrink:0; }
+  .call-card .empty-txt{ font-size:13px; color:#5F6E8C; flex-shrink:0; }
   .board-wait-title{ font-size:12px; letter-spacing:.1em; color:#9FB3D6; font-weight:700; text-transform:uppercase; margin-bottom:10px;}
   .wait-chips{ display:flex; flex-wrap:wrap; gap:8px; }
   .chip{
@@ -1577,12 +1578,13 @@ function renderDesks(){
 
 function buildCallsHtml(){
   return state.desks.map((d,i) => {
-    const idx = i + 1;
+    const idx = d.position || (i + 1);
     const serving = d.currentStudentId ? studentById(d.currentStudentId) : null;
     const flashing = d.calledAt && (Date.now() - Date.parse(d.calledAt) < 1600);
     return '<div class="call-card ' + (flashing ? 'flash' : '') + '">' +
-        '<div class="desklbl">' + idx + '번 자리 · ' + escapeHtml(d.teacher) + '</div>' +
-        (serving ? '<div class="ticket num">' + serving.ticketNumber + '</div>' : '<div class="empty-txt">호출 대기</div>') +
+        '<div class="desklbl">' + idx + '번 자리<br>' + escapeHtml(d.teacher) + '</div>' +
+        '<div class="divider"></div>' +
+        (serving ? '<div class="ticket num">' + serving.ticketNumber + '</div>' : '<div class="empty-txt">호출<br>대기</div>') +
       '</div>';
   }).join('') || '<div class="board-empty">등록된 데스크가 없습니다.</div>';
 }
@@ -1618,12 +1620,13 @@ function openBoardWindow(){
       '.board-title .t1{ font-size:20px; letter-spacing:.14em; color:var(--amber); font-weight:700; text-transform:uppercase;}' +
       '.board-title .t2{ font-size:18px; color:#8FA0C0; }' +
       '.board-calls{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; margin-bottom:44px;}' +
-      '.call-card{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:16px; padding:30px; text-align:center; }' +
+      '.call-card{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:16px; padding:22px 30px; display:flex; align-items:center; justify-content:space-between; gap:20px; text-align:left; }' +
       '.call-card.flash{ animation:flash 1.4s ease; }' +
       '@keyframes flash{ 0%{ background:rgba(242,169,59,.35);} 100%{ background:rgba(255,255,255,.04);} }' +
-      '.call-card .desklbl{ font-size:17px; color:#9FB3D6; font-weight:700; letter-spacing:.05em;}' +
-      '.call-card .ticket{ font-size:88px; font-weight:700; color:var(--amber); margin:12px 0 2px; line-height:1;}' +
-      '.call-card .empty-txt{ font-size:18px; color:#5F6E8C; padding:28px 0; }' +
+      '.call-card .desklbl{ font-size:19px; color:#9FB3D6; font-weight:700; letter-spacing:.03em; line-height:1.5; flex:1; min-width:0; }' +
+      '.call-card .divider{ width:1px; align-self:stretch; background:rgba(255,255,255,.15); flex-shrink:0; }' +
+      '.call-card .ticket{ font-size:104px; font-weight:700; color:var(--amber); line-height:1; flex-shrink:0; }' +
+      '.call-card .empty-txt{ font-size:19px; color:#5F6E8C; flex-shrink:0; line-height:1.4; text-align:center; }' +
       '.board-wait-title{ font-size:17px; letter-spacing:.1em; color:#9FB3D6; font-weight:700; text-transform:uppercase; margin-bottom:16px;}' +
       '.wait-chips{ display:flex; flex-wrap:wrap; gap:12px; }' +
       '.chip{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); padding:12px 22px; border-radius:10px; font-size:26px; font-weight:700; color:#E7ECF6; }' +
@@ -1660,7 +1663,7 @@ function openBoardWindow(){
           'var idx = d.position || (i+1);' +
           'var serving = d.current_student_id ? students.filter(function(s){ return s.id===d.current_student_id; })[0] : null;' +
           'var flashing = flash[d.id] && flash[d.id] > Date.now();' +
-          'return "<div class=\\"call-card" + (flashing?" flash":"") + "\\"><div class=\\"desklbl\\">" + idx + "번 자리 · " + esc(d.teacher||"") + "</div>" + (serving ? "<div class=\\"ticket num\\">" + serving.ticket_number + "</div>" : "<div class=\\"empty-txt\\">호출 대기</div>") + "</div>";' +
+          'return "<div class=\\"call-card" + (flashing?" flash":"") + "\\"><div class=\\"desklbl\\">" + idx + "번 자리<br>" + esc(d.teacher||"") + "</div><div class=\\"divider\\"></div>" + (serving ? "<div class=\\"ticket num\\">" + serving.ticket_number + "</div>" : "<div class=\\"empty-txt\\">호출<br>대기</div>") + "</div>";' +
         '}).join("") || "<div class=\\"board-empty\\">등록된 데스크가 없습니다.</div>";' +
         'document.getElementById("boardCallsPopup").innerHTML = callsHtml;' +
         'var waiting = students.filter(function(s){ return s.status==="waiting"; }).sort(function(a,b){ return (a.ticket_number||0)-(b.ticket_number||0); });' +
