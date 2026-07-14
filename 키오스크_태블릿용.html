@@ -14,42 +14,42 @@
   body{ display:flex; flex-direction:column; align-items:center; padding:20px 16px 40px; overflow-y:auto; }
   .wrap{ width:100%; display:flex; flex-direction:column; align-items:center; padding:0; }
   .brand{ text-align:center; margin-bottom:18px; }
-  .brand .en{ font-size:13px; letter-spacing:3px; color:#9fb3d1; font-weight:700; }
-  .brand .kr{ font-size:22px; font-weight:900; margin-top:4px; }
-  .card{ width:100%; max-width:520px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
-    border-radius:24px; padding:28px 26px 32px; }
-  .step-title{ font-size:20px; font-weight:900; text-align:center; margin:0 0 4px; }
-  .step-sub{ font-size:14px; color:#9fb3d1; text-align:center; margin:0 0 18px; }
-  label.fld{ display:block; font-size:14px; color:#c7d5ea; margin:14px 2px 6px; font-weight:700; }
-  input#name{ width:100%; font-size:24px; line-height:1.3; font-weight:700; text-align:center; padding:16px; border-radius:14px;
+  .brand .en{ font-size:15px; letter-spacing:3px; color:#9fb3d1; font-weight:700; }
+  .brand .kr{ font-size:27px; font-weight:900; margin-top:4px; }
+  .card{ width:100%; max-width:640px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    border-radius:24px; padding:34px 32px 38px; }
+  .step-title{ font-size:27px; font-weight:900; text-align:center; margin:0 0 4px; }
+  .step-sub{ font-size:17px; color:#9fb3d1; text-align:center; margin:0 0 18px; }
+  label.fld{ display:block; font-size:18px; color:#c7d5ea; margin:16px 2px 8px; font-weight:700; }
+  input#name{ width:100%; font-size:32px; line-height:1.3; font-weight:700; text-align:center; padding:20px; border-radius:14px;
     border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#fff; outline:none; }
   input#name:focus{ border-color:var(--amber); }
   .phone-display{ display:flex; gap:10px; justify-content:center; margin:8px 0 4px; }
-  .digit{ width:56px; height:66px; border-radius:12px; background:#0c1626; border:2px solid rgba(255,255,255,.18);
-    display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:900; }
+  .digit{ width:68px; height:80px; border-radius:12px; background:#0c1626; border:2px solid rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center; font-size:42px; font-weight:900; }
   .digit.on{ border-color:var(--amber); }
-  .hint4{ text-align:center; font-size:13px; color:#9fb3d1; margin-top:6px; }
-  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
-  .key{ touch-action:manipulation; height:72px; border-radius:14px; border:none; font-size:30px; font-weight:800; background:#22344f; color:#fff;
+  .hint4{ text-align:center; font-size:16px; color:#9fb3d1; margin-top:8px; }
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px; }
+  .key{ touch-action:manipulation; height:88px; border-radius:14px; border:none; font-size:38px; font-weight:800; background:#22344f; color:#fff;
     cursor:pointer; transition:transform .05s, background .15s; }
   .key:active{ transform:scale(.95); background:#2c405f; }
   .key.act:active{ background:#33507a; }
-  .key.del{ background:#3a2b2b; font-size:22px; }
-  .key.clr{ background:#3a3524; font-size:20px; }
-  .submit{ touch-action:manipulation; width:100%; height:76px; margin-top:20px; border:none; border-radius:16px; background:var(--amber);
-    color:#1a1200; font-size:26px; font-weight:900; cursor:pointer; }
+  .key.del{ background:#3a2b2b; font-size:27px; }
+  .key.clr{ background:#3a3524; font-size:25px; }
+  .submit{ touch-action:manipulation; width:100%; height:92px; margin-top:22px; border:none; border-radius:16px; background:var(--amber);
+    color:#1a1200; font-size:32px; font-weight:900; cursor:pointer; }
   .submit:disabled{ opacity:.4; }
   /* 결과 오버레이 */
   .overlay{ position:fixed; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
     background:rgba(6,12,22,.97); z-index:50; padding:24px; text-align:center; }
   .overlay.show{ display:flex; }
-  .ov-emo{ font-size:56px; margin-bottom:6px; }
-  .ov-name{ font-size:26px; font-weight:700; color:#c7d5ea; }
-  .ov-label{ font-size:20px; color:#9fb3d1; margin-top:22px; }
-  .ov-ticket{ font-size:150px; font-weight:900; line-height:1; color:var(--amber); margin:6px 0 4px;
+  .ov-emo{ font-size:66px; margin-bottom:8px; }
+  .ov-name{ font-size:31px; font-weight:700; color:#c7d5ea; }
+  .ov-label{ font-size:24px; color:#9fb3d1; margin-top:24px; }
+  .ov-ticket{ font-size:170px; font-weight:900; line-height:1; color:var(--amber); margin:6px 0 4px;
     font-family:'IBM Plex Mono',monospace; }
-  .ov-msg{ font-size:22px; font-weight:700; margin-top:14px; max-width:600px; }
-  .ov-sub{ font-size:16px; color:#9fb3d1; margin-top:10px; }
+  .ov-msg{ font-size:27px; font-weight:700; margin-top:16px; max-width:680px; }
+  .ov-sub{ font-size:19px; color:#9fb3d1; margin-top:12px; }
   .ov.err .ov-ticket{ color:#ff8f8f; }
   .conn{ position:fixed; bottom:14px; right:16px; font-size:12px; color:#6f83a3; }
   .dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:#f55; margin-right:5px; vertical-align:middle; }
@@ -57,33 +57,33 @@
 
   /* ===== 현장 접수(walk-in) 위저드 ===== */
   .txt-input{
-    width:100%; font-size:18px; font-weight:600; padding:14px 14px; border-radius:12px;
+    width:100%; font-size:22px; font-weight:600; padding:17px 16px; border-radius:12px;
     border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#fff; outline:none;
     font-family:inherit; appearance:none; -webkit-appearance:none;
   }
   .txt-input:focus{ border-color:var(--amber); }
   .txt-input::placeholder{ color:#5b6a86; }
   .ghost-btn{
-    touch-action:manipulation; width:100%; height:56px; margin-top:12px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
-    background:transparent; color:#c7d5ea; font-size:15px; font-weight:700; cursor:pointer;
+    touch-action:manipulation; width:100%; height:66px; margin-top:14px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
+    background:transparent; color:#c7d5ea; font-size:18px; font-weight:700; cursor:pointer;
   }
   .ghost-btn:active{ background:rgba(255,255,255,.06); }
   .toggle-row{ display:flex; gap:10px; }
   .toggle-row > select{ flex:1; min-width:0; }
   .toggle-btn{
-    touch-action:manipulation; flex:1; padding:18px 10px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
-    background:#0c1626; color:#fff; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit;
+    touch-action:manipulation; flex:1; padding:22px 12px; border-radius:14px; border:2px solid rgba(255,255,255,.18);
+    background:#0c1626; color:#fff; font-size:20px; font-weight:800; cursor:pointer; font-family:inherit;
   }
   .toggle-btn.active{ border-color:var(--amber); background:rgba(242,169,59,.15); color:var(--amber); }
   .chk-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .chk-grid label{
-    display:flex; align-items:center; gap:8px; padding:14px 12px; border-radius:12px;
-    border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#e7ecf6; font-size:14px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; padding:17px 14px; border-radius:12px;
+    border:2px solid rgba(255,255,255,.18); background:#0c1626; color:#e7ecf6; font-size:17px; cursor:pointer;
   }
-  .chk-grid input{ width:20px; height:20px; }
+  .chk-grid input{ width:24px; height:24px; }
   .confirm-box{ background:rgba(255,255,255,.06); border-radius:14px; padding:16px 18px; margin-bottom:18px; text-align:left; }
-  .confirm-box b{ font-size:19px; color:#fff; }
-  .confirm-sub{ font-size:13px; color:#9fb3d1; margin-top:3px; }
+  .confirm-box b{ font-size:23px; color:#fff; }
+  .confirm-sub{ font-size:16px; color:#9fb3d1; margin-top:4px; }
   #lookupCard .ghost-btn{ margin-top:14px; }
 </style>
 </head>
