@@ -528,6 +528,17 @@
   renderPhone();
   checkConn();
   setInterval(checkConn, 15000);
+
+  // 화면 아무데나 처음 한 번 터치하면 자동으로 전체화면(주소창/내비게이션 바 숨김)으로 전환
+  function goFullscreen(){
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if(req && !document.fullscreenElement){
+      req.call(el).catch(function(){});
+    }
+  }
+  document.addEventListener("touchstart", goFullscreen, { once: true });
+  document.addEventListener("click", goFullscreen, { once: true });
 </script>
 </body>
 </html>
