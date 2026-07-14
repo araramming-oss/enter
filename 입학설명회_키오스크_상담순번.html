@@ -1676,10 +1676,12 @@ function openBoardWindow(){
           'var tracker = getTracker();' +
           'desks.forEach(function(d){' +
             'if(!d.called_at) return;' +
+            'var age = Date.now()-Date.parse(d.called_at);' +
+            'if(age < 2000){ flash[d.id] = Date.now()+1400; }' + // 깜빡임 효과는 방송 중복 방지와 무관하게 항상 최신 호출 기준으로 표시
             'var prev = tracker[d.id]; var isNew = !prev || (Date.parse(d.called_at) > Date.parse(prev));' +
             'tracker[d.id] = d.called_at;' +
             'if(!primed) return;' +
-            'if(isNew && d.called_ticket){ var age = Date.now()-Date.parse(d.called_at); if(age < 25000){ flash[d.id] = Date.now()+1400; announce(d.called_ticket, d.position||1); } }' +
+            'if(isNew && d.called_ticket && age < 25000){ announce(d.called_ticket, d.position||1); }' +
           '});' +
           'primed = true;' +
           'render(students, desks);' +
