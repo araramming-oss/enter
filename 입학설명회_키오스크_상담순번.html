@@ -176,17 +176,17 @@
   .board-title{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:20px; flex-wrap:wrap; gap:8px;}
   .board-title .t1{ font-size:13px; letter-spacing:.14em; color:var(--amber); font-weight:700; text-transform:uppercase;}
   .board-title .t2{ font-size:12px; color:#8FA0C0; }
-  .board-calls{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:26px;}
+  .board-calls{ display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; margin-bottom:26px;}
   .call-card{
     background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:12px;
     padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; text-align:left;
   }
   .call-card.flash{ animation:flash 1.4s ease; }
   @keyframes flash{ 0%{ background:rgba(242,169,59,.35);} 100%{ background:rgba(255,255,255,.04);} }
-  .call-card .desklbl{ font-size:13px; color:#9FB3D6; font-weight:700; letter-spacing:.03em; line-height:1.4; flex:1; min-width:0;}
+  .call-card .desklbl{ font-size:16px; color:#9FB3D6; font-weight:700; letter-spacing:.03em; line-height:1.4; flex:1; min-width:0;}
   .call-card .divider{ width:1px; align-self:stretch; background:rgba(255,255,255,.15); flex-shrink:0; }
-  .call-card .ticket{ font-size:58px; font-weight:700; color:var(--amber); line-height:1; flex-shrink:0; }
-  .call-card .empty-txt{ font-size:13px; color:#5F6E8C; flex-shrink:0; }
+  .call-card .ticket{ font-size:76px; font-weight:700; color:var(--amber); line-height:1; flex-shrink:0; }
+  .call-card .empty-txt{ font-size:15px; color:#5F6E8C; flex-shrink:0; }
   .board-wait-title{ font-size:12px; letter-spacing:.1em; color:#9FB3D6; font-weight:700; text-transform:uppercase; margin-bottom:10px;}
   .wait-chips{ display:flex; flex-wrap:wrap; gap:8px; }
   .chip{
@@ -1619,14 +1619,14 @@ function openBoardWindow(){
       '.board-title{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:34px; flex-wrap:wrap; gap:10px;}' +
       '.board-title .t1{ font-size:20px; letter-spacing:.14em; color:var(--amber); font-weight:700; text-transform:uppercase;}' +
       '.board-title .t2{ font-size:18px; color:#8FA0C0; }' +
-      '.board-calls{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; margin-bottom:44px;}' +
+      '.board-calls{ display:grid; grid-template-columns:repeat(2, 1fr); gap:22px; margin-bottom:44px;}' +
       '.call-card{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:16px; padding:22px 30px; display:flex; align-items:center; justify-content:space-between; gap:20px; text-align:left; }' +
       '.call-card.flash{ animation:flash 1.4s ease; }' +
       '@keyframes flash{ 0%{ background:rgba(242,169,59,.35);} 100%{ background:rgba(255,255,255,.04);} }' +
-      '.call-card .desklbl{ font-size:19px; color:#9FB3D6; font-weight:700; letter-spacing:.03em; line-height:1.5; flex:1; min-width:0; }' +
+      '.call-card .desklbl{ font-size:24px; color:#9FB3D6; font-weight:700; letter-spacing:.03em; line-height:1.5; flex:1; min-width:0; }' +
       '.call-card .divider{ width:1px; align-self:stretch; background:rgba(255,255,255,.15); flex-shrink:0; }' +
-      '.call-card .ticket{ font-size:104px; font-weight:700; color:var(--amber); line-height:1; flex-shrink:0; }' +
-      '.call-card .empty-txt{ font-size:19px; color:#5F6E8C; flex-shrink:0; line-height:1.4; text-align:center; }' +
+      '.call-card .ticket{ font-size:130px; font-weight:700; color:var(--amber); line-height:1; flex-shrink:0; }' +
+      '.call-card .empty-txt{ font-size:22px; color:#5F6E8C; flex-shrink:0; line-height:1.4; text-align:center; }' +
       '.board-wait-title{ font-size:17px; letter-spacing:.1em; color:#9FB3D6; font-weight:700; text-transform:uppercase; margin-bottom:16px;}' +
       '.wait-chips{ display:flex; flex-wrap:wrap; gap:12px; }' +
       '.chip{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); padding:12px 22px; border-radius:10px; font-size:26px; font-weight:700; color:#E7ECF6; }' +
